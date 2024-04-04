@@ -27,12 +27,54 @@ export class DatabaseService<T extends Document> {
         return this.model.find(filter, null, options);
     }
 
-    findById(id: string): Promise<T | null> {
+    /**
+     * Find a document based on the filter and options provided
+     * @param filter {FilterQuery<T>} - filter conditions
+     * @param options {QueryOptions<T>} - query options
+     * @returns {Promise<Array<T>>} - returns an array of documents if found
+     * @throws {NotFoundException} - throws NotFoundException if no documents are found
+     */
+    async _find(filter: FilterQuery<T> = {}, options?: QueryOptions<T>): Promise<Array<T>> {
+        const result = await this.find(filter, options);
+        if (result.length === 0) throw new NotFoundException(this.messages["NOT_FOUND"] ?? this.name() + "NOT_FOUND");
+        return result;
+    }
+
+    async findById(id: string): Promise<T | null> {
         return this.model.findById(id);
     }
 
+    /**
+     * Find a document by id and throw NotFoundException if not found
+     * @param id {string} - id of the document
+     * @returns {Promise<T>} - returns the document if found
+     * @throws {NotFoundException} - throws NotFoundException if document is not found
+     */
     async _findById(id: string): Promise<T> {
         const result = await this.model.findById(id);
+        if (!result) throw new NotFoundException(this.messages["NOT_FOUND"] ?? this.name() + "NOT_FOUND");
+        return result;
+    }
+
+    /**
+     * Find a single document based on the filter and options provided
+     * @param filter {FilterQuery<T>} - filter conditions
+     * @param options {QueryOptions<T>} - query options
+     * @returns {Promise<T | null>} - returns the document if found, null otherwise
+     */
+    async findOne(filter: FilterQuery<T>, options?: QueryOptions<T>): Promise<T | null> {
+        return this.model.findOne(filter, null, options);
+    }
+
+    /**
+     * Find a single document based on the filter and options provided and throw NotFoundException if not found
+     * @param filter {FilterQuery<T>} - filter conditions
+     * @param options {QueryOptions<T>} - query options
+     * @returns {Promise<T>} - returns the document if found
+     * @throws {NotFoundException} - throws NotFoundException if document is not found
+     */
+    async _findOne(filter: FilterQuery<T>, options?: QueryOptions<T>): Promise<T> {
+        const result = await this.findOne(filter, options);
         if (!result) throw new NotFoundException(this.messages["NOT_FOUND"] ?? this.name() + "NOT_FOUND");
         return result;
     }

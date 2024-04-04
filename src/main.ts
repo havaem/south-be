@@ -1,10 +1,10 @@
-import { HttpStatus, ValidationPipe } from "@nestjs/common";
+import { ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import * as compression from "compression";
-import { utilities as nestWinstonModuleUtilities, WinstonModule } from "nest-winston";
-import * as winston from "winston";
+import * as morgan from "morgan";
 
 import { AppModule } from "./app.module";
+import { swaggerConfig } from "./configs/swagger.config";
 import { GlobalModule } from "./shared/modules/global.module";
 import { ConfigService } from "./shared/services/config.service";
 
@@ -13,20 +13,7 @@ async function bootstrap() {
         cors: {
             origin: "*",
         },
-        logger: WinstonModule.createLogger({
-            transports: [
-                new winston.transports.Console({
-                    format: winston.format.combine(
-                        winston.format.timestamp(),
-                        winston.format.ms(),
-                        nestWinstonModuleUtilities.format.nestLike("South", {
-                            colors: true,
-                            prettyPrint: true,
-                        }),
-                    ),
-                }),
-            ],
-        }),
+        logger: ["error"],
     });
     //* using configService to get environment variables
     const configService = app.select(GlobalModule).get(ConfigService);
@@ -37,14 +24,19 @@ async function bootstrap() {
     //* compress response
     app.use(compression());
 
+    //* log request
+    app.use(morgan("dev"));
+
     app.useGlobalPipes(
         new ValidationPipe({
             transform: true,
             whitelist: true,
-            forbidNonWhitelisted: true,
-            errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
         }),
     );
+
+    if (configService.appConfig.documentEnabled) {
+        swaggerConfig(app, configService.appConfig.swaggerPath);
+    }
 
     await app.listen(configService.appConfig.port, () => {
         console.log(

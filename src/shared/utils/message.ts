@@ -4,7 +4,7 @@
  * @returns {string} message
  */
 export const getRequiredMessage = (path: string): string => {
-    return `${path.toUpperCase()}_IS_REQUIRED`;
+    return `${convertMessage(path.toUpperCase())}_IS_REQUIRED`;
 };
 
 /**
@@ -13,7 +13,7 @@ export const getRequiredMessage = (path: string): string => {
  * @returns {string} message
  */
 export const getUniqueMessage = (path: string): string => {
-    return `${path.toUpperCase()}_IS_UNIQUE`;
+    return `${convertMessage(path.toUpperCase())}_IS_UNIQUE`;
 };
 
 /**
@@ -22,7 +22,7 @@ export const getUniqueMessage = (path: string): string => {
  * @returns {string} message
  */
 export const getInvalidMessage = (path: string): string => {
-    return `${path.toUpperCase()}_IS_INVALID`;
+    return `${convertMessage(path.toUpperCase())}_IS_INVALID`;
 };
 
 /**
@@ -32,4 +32,40 @@ export const getInvalidMessage = (path: string): string => {
  */
 export const convertMessage = (message: string): string => {
     return message.replaceAll(" ", "_").toUpperCase();
+};
+
+/**
+ * @description get message for success
+ * @param path {string} - path to the field
+ * @returns {string} message
+ * @example
+ * getSuccesMessage("register");
+ * returns "REGISTER_SUCCESS"
+ */
+export const getSuccessMessage = (path: string): string => {
+    return `${convertMessage(path)}_SUCCESSFULLY`;
+};
+
+/**
+ * @description get message for not found
+ * @param path {string} - path to the field
+ * @returns {string} message
+ * @example
+ * getNotFoundMessage("user");
+ * returns "USER_NOT_FOUND"
+ */
+export const getNotFoundMessage = (path: string): string => {
+    return `${convertMessage(path)}_NOT_FOUND`;
+};
+
+export const getGeneralMessage = (path: string) => {
+    return {
+        FIND_ALL: getSuccessMessage(`find_all_${path + "s"}`),
+        FIND: getSuccessMessage(`find_one_${path}`),
+        CREATE: getSuccessMessage(`create_${path}`),
+        UPDATE: getSuccessMessage(`update_${path}`),
+        REMOVE: getSuccessMessage(`remove_${path}`),
+        DELETE: getSuccessMessage(`delete_${path}`),
+        NOT_FOUND: getNotFoundMessage(path),
+    };
 };

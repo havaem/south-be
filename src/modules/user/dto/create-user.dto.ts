@@ -1,19 +1,7 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { Matches } from "class-validator";
+import { OmitType, PartialType } from "@nestjs/swagger";
 
-import { REGEX } from "@/constants";
-import { getInvalidMessage } from "@/shared/utils";
+import { User } from "@/schemas/user.schema";
 
-export class CreateUserDto {
-    @ApiProperty()
-    @Matches(REGEX.username, {
-        message: ({ property }) => getInvalidMessage(property),
-    })
-    username: string;
-
-    @ApiProperty()
-    @Matches(REGEX.password, {
-        message: ({ property }) => getInvalidMessage(property),
-    })
-    password: string;
-}
+export class CreateUserDto extends PartialType(
+    OmitType(User, ["_id", "createdAt", "deletedAt", "updatedAt", "comparePassword"]),
+) {}

@@ -1,9 +1,12 @@
 import { MongooseModule, Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { ApiProperty } from "@nestjs/swagger";
 import * as bcrypt from "bcrypt";
+import { IsEmail, Matches } from "class-validator";
 import { HydratedDocument } from "mongoose";
 
+import { REGEX } from "@/constants";
 import { ConfigService } from "@/shared/services/config.service";
-import { getUniqueMessage } from "@/shared/utils";
+import { getInvalidMessage, getRequiredMessage, getUniqueMessage } from "@/shared/utils";
 
 import { BaseSchema } from "./base.schema";
 
@@ -14,15 +17,56 @@ export type UserDocument = HydratedDocument<User>;
     versionKey: false,
 })
 export class User extends BaseSchema {
+    @ApiProperty({
+        example: "example@gmail.com",
+        required: true,
+    })
+    @IsEmail({}, { message: ({ property }) => getInvalidMessage(property) })
     @Prop({
         type: String,
-        required: [true, getUniqueMessage("username")],
+        unique: [true, ({ path }) => getUniqueMessage(path)],
+        required: [true, ({ path }) => getRequiredMessage(path)],
+        validate: {
+            validator: (v: string) => REGEX.email.test(v),
+            message: ({ value }) => `${value} is not a valid email!`,
+        },
+    })
+    email: string;
+
+    @ApiProperty({
+        example: "example",
+        required: true,
+    })
+    @Matches(REGEX.username, {
+        message: ({ property }) => getInvalidMessage(property),
+    })
+    @Prop({
+        type: String,
+        default: function () {
+            return this.email.split("@")[0] + Math.floor(Math.random() * 1000);
+        },
+        required: [true, ({ path }) => getRequiredMessage(path)],
+        validate: {
+            validator: (v: string) => REGEX.username.test(v),
+            message: ({ value }) => `${value} is not a valid username!`,
+        },
     })
     username: string;
 
+    @ApiProperty({
+        example: "example123Aa",
+        required: true,
+    })
+    @Matches(REGEX.password, {
+        message: ({ property }) => getInvalidMessage(property),
+    })
     @Prop({
         type: String,
-        required: [true, ({ path }) => getUniqueMessage(path)],
+        required: [true, ({ path }) => getRequiredMessage(path)],
+        validate: {
+            validator: (v: string) => REGEX.password.test(v),
+            message: ({ value }) => `${value} is not a valid password!`,
+        },
     })
     password: string;
 
