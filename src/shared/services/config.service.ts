@@ -39,11 +39,11 @@ export class ConfigService {
             jwtRefreshSecretKey: this.getString("JWT_REFRESH_SECRET_KEY"),
             jwtRefreshExpirationTime: this.getString("JWT_REFRESH_EXPIRATION_TIME"),
 
-            jwtVerifySecretKey: this.getString("JWT_VERIFY_SECRET_KEY"),
-            jwtVerifyExpirationTime: this.getString("JWT_VERIFY_EXPIRATION_TIME"),
+            // jwtVerifySecretKey: this.getString("JWT_VERIFY_SECRET_KEY"),
+            // jwtVerifyExpirationTime: this.getString("JWT_VERIFY_EXPIRATION_TIME"),
 
-            jwtForgotPasswordSecretKey: this.getString("JWT_FORGOT_PASSWORD_SECRET_KEY"),
-            jwtForgotPasswordExpirationTime: this.getString("JWT_FORGOT_PASSWORD_EXPIRATION_TIME"),
+            // jwtForgotPasswordSecretKey: this.getString("JWT_FORGOT_PASSWORD_SECRET_KEY"),
+            // jwtForgotPasswordExpirationTime: this.getString("JWT_FORGOT_PASSWORD_EXPIRATION_TIME"),
         };
     }
 

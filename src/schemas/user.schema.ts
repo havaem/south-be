@@ -7,6 +7,7 @@ import { HydratedDocument } from "mongoose";
 import { REGEX } from "@/constants";
 import { ConfigService } from "@/shared/services/config.service";
 import { getInvalidMessage, getRequiredMessage, getUniqueMessage } from "@/shared/utils";
+import { toDto } from "@/shared/utils/toDto";
 
 import { BaseSchema } from "./base.schema";
 
@@ -74,6 +75,7 @@ export class User extends BaseSchema {
 }
 
 const UserSchema = SchemaFactory.createForClass(User);
+UserSchema.methods["toDto"] = toDto;
 
 const UserSchemaModule = MongooseModule.forFeatureAsync([
     {
