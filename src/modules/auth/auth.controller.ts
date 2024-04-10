@@ -1,7 +1,7 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post } from "@nestjs/common";
+import { Body, Controller, HttpStatus } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 
-import { Public, User } from "@/decorators";
+import { Api, User } from "@/decorators";
 
 import { AuthService } from "./auth.service";
 import { LoginDto, RegisterDto } from "./dto";
@@ -12,22 +12,36 @@ import { AuthDto } from "./dto/auth.dto";
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
 
-    @Public()
-    @Post("register")
+    @Api({
+        publicRoute: true,
+        method: "POST",
+        path: "register",
+        responseStatus: HttpStatus.CREATED,
+        responseMessage: "User registered successfully",
+    })
     async register(@Body() data: RegisterDto) {
         const response = this.authService.generateResponse(await this.authService.register(data));
         return response;
     }
 
-    @Public()
-    @Post("login")
-    @HttpCode(HttpStatus.OK)
+    @Api({
+        publicRoute: true,
+        method: "POST",
+        path: "login",
+        responseStatus: HttpStatus.OK,
+        responseMessage: "User logged in successfully",
+    })
     async login(@Body() data: LoginDto) {
         const response = this.authService.generateResponse(await this.authService.login(data));
         return response;
     }
 
-    @Get()
+    @Api({
+        method: "GET",
+        path: "",
+        responseStatus: HttpStatus.OK,
+        responseMessage: "Profile retrieved successfully",
+    })
     async getProfile(@User() { _id }: IUserJwt) {
         const response = await this.authService.getProfile(_id);
         return response.toDto(AuthDto);

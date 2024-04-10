@@ -31,12 +31,11 @@ async function bootstrap() {
         new ValidationPipe({
             transform: true,
             whitelist: true,
+            enableDebugMessages: true,
         }),
     );
 
-    if (configService.appConfig.documentEnabled) {
-        swaggerConfig(app, configService.appConfig.swaggerPath);
-    }
+    if (configService.appConfig.documentEnabled) swaggerConfig(app, configService.appConfig.swaggerPath);
 
     await app.listen(configService.appConfig.port, () => {
         console.log(
