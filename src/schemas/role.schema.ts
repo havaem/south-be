@@ -1,8 +1,9 @@
 import { MongooseModule, Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
+import { IsString } from "class-validator";
 import mongoose, { HydratedDocument } from "mongoose";
 
-import { getRequiredMessage } from "@/shared/utils";
+import { getInvalidMessage, getRequiredMessage } from "@/shared/utils";
 import { toDto } from "@/shared/utils/toDto";
 
 import { BaseSchema } from "./base.schema";
@@ -28,6 +29,7 @@ export class Role extends BaseSchema {
         required: [true, getRequiredMessage("name")],
         unique: true,
     })
+    @IsString({ message: ({ property }) => getInvalidMessage(property) })
     name: string;
 
     @ApiProperty({
@@ -39,6 +41,7 @@ export class Role extends BaseSchema {
         type: String,
         default: "",
     })
+    @IsString({ message: ({ property }) => getInvalidMessage(property) })
     description: string;
 
     @ApiProperty({
