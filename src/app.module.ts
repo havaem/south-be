@@ -11,6 +11,7 @@ import { PermissionModule } from "./modules/permission/permission.module";
 import { RoleModule } from "./modules/role/role.module";
 import { UserModule } from "./modules/user/user.module";
 import { AuthGuard } from "./shared/guards/auth.guard";
+import { PermissionsGuard } from "./shared/guards/permission.guard";
 import { GlobalModule } from "./shared/modules/global.module";
 import { ConfigService } from "./shared/services/config.service";
 
@@ -39,6 +40,10 @@ import { ConfigService } from "./shared/services/config.service";
         {
             provide: APP_GUARD,
             useClass: AuthGuard,
+        },
+        {
+            provide: APP_GUARD,
+            useClass: PermissionsGuard,
         },
         {
             provide: APP_FILTER,

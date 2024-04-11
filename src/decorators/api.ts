@@ -1,5 +1,5 @@
 import { applyDecorators, Delete, Get, HttpCode, Patch, Post, Put, RequestMethod } from "@nestjs/common";
-import { ApiBearerAuth, ApiOkResponse, ApiUnauthorizedResponse } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiUnauthorizedResponse } from "@nestjs/swagger";
 
 import { Public } from "./public.decorator";
 import { ResponseMessage } from "./response-message";
@@ -44,7 +44,17 @@ export const Api = ({ publicRoute, method, path, responseMessage, responseStatus
     decorators.push(ResponseMessage(responseMessage));
     decorators.push(HttpCode(responseStatus));
 
-    decorators.push(ApiOkResponse({ description: responseMessage }));
+    switch (responseStatus) {
+        case 200:
+            decorators.push(ApiOkResponse({ description: responseMessage }));
+            break;
+        case 201:
+            decorators.push(ApiCreatedResponse({ description: responseMessage }));
+            break;
+        default:
+            decorators.push(ApiOkResponse({ description: responseMessage }));
+            break;
+    }
 
     return applyDecorators(...decorators);
 };

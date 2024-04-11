@@ -62,10 +62,10 @@ export const getGeneralMessage = (path: string) => {
     return {
         FIND_ALL: getSuccessMessage(`find_all_${path + "s"}`),
         FIND: getSuccessMessage(`find_one_${path}`),
-        CREATE: getSuccessMessage(`create_${path}`),
-        UPDATE: getSuccessMessage(`update_${path}`),
-        REMOVE: getSuccessMessage(`remove_${path}`),
-        DELETE: getSuccessMessage(`delete_${path}`),
+        CREATE: getSuccessMessage(`created_${path}`),
+        UPDATE: getSuccessMessage(`updated_${path}`),
+        REMOVE: getSuccessMessage(`removed_${path}`),
+        DELETE: getSuccessMessage(`deleted_${path}`),
         NOT_FOUND: getNotFoundMessage(path),
     };
 };

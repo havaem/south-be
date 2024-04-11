@@ -7,7 +7,7 @@ import { getInvalidMessage, getRequiredMessage } from "@/shared/utils";
 import { toDto } from "@/shared/utils/toDto";
 
 import { BaseSchema } from "./base.schema";
-import { Permission } from "./perrmission";
+import { Permission } from "./perrmission.schema";
 import { User } from "./user.schema";
 
 export type RoleDocument = HydratedDocument<Role>;

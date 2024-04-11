@@ -6,9 +6,8 @@ import { getRequiredMessage } from "@/shared/utils";
 import { toDto } from "@/shared/utils/toDto";
 
 import { BaseSchema } from "./base.schema";
-import { Role } from "./role.schema";
 
-export type RoleDocument = HydratedDocument<Role>;
+export type PermissionDocument = HydratedDocument<Permission>;
 
 @Schema({
     timestamps: true,

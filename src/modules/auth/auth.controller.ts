@@ -42,7 +42,7 @@ export class AuthController {
         responseStatus: HttpStatus.OK,
         responseMessage: "Profile retrieved successfully",
     })
-    async getProfile(@User() { _id }: IUserJwt) {
+    async getProfile(@User() { _id }: IUserRequest) {
         const response = await this.authService.getProfile(_id);
         return response.toDto(AuthDto);
     }

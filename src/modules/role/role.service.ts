@@ -6,11 +6,12 @@ import { Role, RoleDocument } from "@/schemas/role.schema";
 import { DatabaseService } from "@/shared/services/document.service";
 
 import { CreateRoleDto } from "./dto/create-role.dto";
+import { ROLE_MESSAGES } from "./role.message";
 
 @Injectable()
 export class RoleService extends DatabaseService<RoleDocument> {
     constructor(@InjectModel(Role.name) private roleModel: Model<RoleDocument>) {
-        super(roleModel, {});
+        super(roleModel, ROLE_MESSAGES);
     }
 
     create(createRoleDto: CreateRoleDto): Promise<RoleDocument> {
