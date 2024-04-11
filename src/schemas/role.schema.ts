@@ -72,6 +72,14 @@ export class Role extends BaseSchema {
 const RoleSchema = SchemaFactory.createForClass(Role);
 RoleSchema.methods["toDto"] = toDto;
 
-const RoleSchemaModule = MongooseModule.forFeature([{ name: Role.name, schema: RoleSchema }]);
+const RoleSchemaModule = MongooseModule.forFeatureAsync([
+    {
+        name: Role.name,
+        useFactory: () => {
+            const schema = RoleSchema;
+            return schema;
+        },
+    },
+]);
 
 export { RoleSchema, RoleSchemaModule };

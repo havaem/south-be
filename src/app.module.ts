@@ -1,7 +1,9 @@
+import { accessibleRecordsPlugin } from "@casl/mongoose";
 import { Logger, Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from "@nestjs/core";
 import { MongooseModule } from "@nestjs/mongoose";
+import mongoose from "mongoose";
 
 import { HttpExceptionFilter } from "./exceptions/http.exception";
 import { MongoExceptionFilter } from "./exceptions/mongo.exception";
@@ -23,9 +25,12 @@ import { ConfigService } from "./shared/services/config.service";
         }),
         MongooseModule.forRootAsync({
             imports: [GlobalModule],
-            useFactory: async (cfg: ConfigService) => ({
-                uri: cfg.mongoUri,
-            }),
+            useFactory: async (cfg: ConfigService) => {
+                mongoose.plugin(accessibleRecordsPlugin);
+                return {
+                    uri: cfg.mongoUri,
+                };
+            },
             inject: [ConfigService],
         }),
         GlobalModule,
