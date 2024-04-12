@@ -68,9 +68,6 @@ export class ConfigService {
             //* Swagger Config
             swaggerPath: this.getString("PREFIX") + this.getString("SWAGGER_PATH"),
             documentEnabled: this.getBoolean("ENABLE_DOCUMENTATION"),
-            //* Role Config
-            adminRoleId: this.getString("ADMIN_ROLE_ID"),
-            userRoleId: this.getString("USER_ROLE_ID"),
         };
     }
 

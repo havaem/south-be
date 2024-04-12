@@ -1,7 +1,7 @@
 import { Body, Controller, HttpStatus } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 
-import { Api, User } from "@/decorators";
+import { Api, Roles, User } from "@/decorators";
 
 import { AuthService } from "./auth.service";
 import { LoginDto, RegisterDto } from "./dto";
@@ -42,6 +42,7 @@ export class AuthController {
         responseStatus: HttpStatus.OK,
         responseMessage: "Profile retrieved successfully",
     })
+    @Roles(["user"])
     async getProfile(@User() { _id }: IUserRequest) {
         const response = await this.authService.getProfile(_id);
         return response.toDto(AuthDto);

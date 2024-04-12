@@ -2,7 +2,7 @@ import { MongooseModule, Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import * as bcrypt from "bcrypt";
 import { IsEmail, Matches } from "class-validator";
-import { HydratedDocument } from "mongoose";
+import mongoose, { HydratedDocument } from "mongoose";
 
 import { REGEX } from "@/constants";
 import { ConfigService } from "@/shared/services/config.service";
@@ -10,6 +10,7 @@ import { getInvalidMessage, getRequiredMessage, getUniqueMessage } from "@/share
 import { toDto } from "@/shared/utils/toDto";
 
 import { BaseSchema } from "./base.schema";
+import { Role } from "./role.schema";
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -70,6 +71,15 @@ export class User extends BaseSchema {
         },
     })
     password: string;
+
+    @Prop([
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Role",
+            default: [],
+        },
+    ])
+    roles: Role[];
 
     comparePassword: (password: string) => Promise<boolean>;
 }

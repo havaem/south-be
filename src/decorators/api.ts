@@ -1,17 +1,21 @@
 import { applyDecorators, Delete, Get, HttpCode, Patch, Post, Put, RequestMethod } from "@nestjs/common";
 import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiUnauthorizedResponse } from "@nestjs/swagger";
 
+import { ERole } from "@/constants/role";
+
 import { Public } from "./public.decorator";
 import { ResponseMessage } from "./response-message";
+import { Roles } from "./role.decorator";
 
 interface IProps {
     publicRoute?: boolean;
     method?: keyof typeof RequestMethod;
     path?: string;
+    roles?: ERole[];
     responseMessage?: string;
     responseStatus?: number;
 }
-export const Api = ({ publicRoute, method, path, responseMessage, responseStatus }: IProps): MethodDecorator => {
+export const Api = ({ publicRoute, method, path, roles, responseMessage, responseStatus }: IProps): MethodDecorator => {
     const decorators: Array<ClassDecorator | MethodDecorator | PropertyDecorator> = [];
 
     if (publicRoute) decorators.push(Public());
@@ -40,6 +44,8 @@ export const Api = ({ publicRoute, method, path, responseMessage, responseStatus
             decorators.push(Get(path));
             break;
     }
+
+    decorators.push(Roles(roles));
 
     decorators.push(ResponseMessage(responseMessage));
     decorators.push(HttpCode(responseStatus));

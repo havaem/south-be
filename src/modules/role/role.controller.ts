@@ -2,6 +2,7 @@ import { Body, Controller } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 
 import { EAction } from "@/constants/aciton";
+import { ERole } from "@/constants/role";
 import { Api } from "@/decorators";
 import { CheckPermissions } from "@/decorators/permission";
 import { Role } from "@/schemas";
@@ -19,6 +20,7 @@ export class RoleController {
     @Api({
         path: "/",
         method: "POST",
+        roles: [ERole.ADMIN],
         responseMessage: ROLE_MESSAGES.CREATE,
         responseStatus: 201,
     })
