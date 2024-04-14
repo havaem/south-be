@@ -1,12 +1,17 @@
 import { Injectable } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { Model } from "mongoose";
+
+import { Permission, PermissionDocument } from "@/schemas";
 
 import { CreatePermissionDto } from "./dto/create-permission.dto";
 import { UpdatePermissionDto } from "./dto/update-permission.dto";
 
 @Injectable()
 export class PermissionService {
+    constructor(@InjectModel(Permission.name) private readonly permissionModel: Model<PermissionDocument>) {}
     create(createPermissionDto: CreatePermissionDto) {
-        return "This action adds a new permission";
+        return this.permissionModel.create(createPermissionDto);
     }
 
     findAll() {

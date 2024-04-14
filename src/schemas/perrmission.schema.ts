@@ -1,8 +1,10 @@
 import { MongooseModule, Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
+import { IsEnum, IsObject, IsString } from "class-validator";
 import { HydratedDocument } from "mongoose";
 
-import { getRequiredMessage } from "@/shared/utils";
+import { EAction } from "@/constants/aciton";
+import { getInvalidMessage, getRequiredMessage } from "@/shared/utils";
 import { toDto } from "@/shared/utils/toDto";
 
 import { BaseSchema } from "./base.schema";
@@ -19,6 +21,9 @@ export class Permission extends BaseSchema {
         required: true,
         description: "Permission name.",
     })
+    @IsString({
+        message: getRequiredMessage("name"),
+    })
     @Prop({
         type: String,
         trim: true,
@@ -33,10 +38,65 @@ export class Permission extends BaseSchema {
         description: "Permission description.",
         required: false,
     })
+    @IsString()
     @Prop({
         type: String,
     })
     description: string;
+
+    @ApiProperty({
+        example: "CREATE",
+        required: true,
+        description: "Action.",
+        enum: EAction,
+    })
+    @IsEnum(EAction, { message: getInvalidMessage("action") })
+    @Prop({
+        type: String,
+        enum: EAction,
+        required: true,
+    })
+    action: `${EAction}`;
+
+    @ApiProperty({
+        example: "User",
+        required: true,
+        description: "Subject.",
+    })
+    @IsString({
+        message: getRequiredMessage("subject"),
+    })
+    @Prop({
+        type: String,
+        required: true,
+    })
+    subject: string;
+
+    @ApiProperty({
+        example: ["password"],
+        required: false,
+        description: "Fields.",
+    })
+    @IsString({
+        each: true,
+    })
+    @Prop({
+        type: [String],
+        default: [],
+    })
+    fields: string[];
+
+    @ApiProperty({
+        example: { _id: "123456" },
+        required: false,
+        description: "Conditions.",
+    })
+    @IsObject()
+    @Prop({
+        type: Object,
+        default: null,
+    })
+    conditions: Record<string, unknown> | null;
 }
 
 const PermissionSchema = SchemaFactory.createForClass(Permission);

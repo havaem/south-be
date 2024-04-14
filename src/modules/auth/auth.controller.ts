@@ -2,6 +2,7 @@ import { Body, Controller, HttpStatus } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 
 import { Api, Roles, User } from "@/decorators";
+import { IUserRequest } from "@/shared/types";
 
 import { AuthService } from "./auth.service";
 import { LoginDto, RegisterDto } from "./dto";

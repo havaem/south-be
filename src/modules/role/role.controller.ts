@@ -26,7 +26,8 @@ export class RoleController {
     })
     @CheckPermissions((ability: AppAbility) => ability.can(EAction.CREATE, Role))
     create(@Body() createRoleDto: CreateRoleDto) {
-        return this.roleService.create(createRoleDto);
+        return {};
+        // return this.roleService.create(createRoleDto);
     }
 
     // @Get()

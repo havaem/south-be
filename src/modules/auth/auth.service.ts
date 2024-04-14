@@ -3,6 +3,7 @@ import { JwtService } from "@nestjs/jwt";
 
 import { UserDocument } from "@/schemas/user.schema";
 import { ConfigService } from "@/shared/services/config.service";
+import { IUserJwt } from "@/shared/types";
 
 import { UserService } from "../user/user.service";
 import { AUTH_MESSAGE } from "./auth.message";

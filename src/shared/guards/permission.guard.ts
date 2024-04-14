@@ -26,6 +26,7 @@ export class PermissionsGuard implements CanActivate {
 
         const { user } = context.switchToHttp().getRequest();
         console.log("user: ", user);
+
         const ability = this.caslAbilityFactory.createForUser(user);
 
         return permissionHandlers.every((handler) => this.execPermissionHandler(handler, ability));
