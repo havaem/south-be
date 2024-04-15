@@ -3,7 +3,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsEnum, IsObject, IsString } from "class-validator";
 import { HydratedDocument } from "mongoose";
 
-import { EAction } from "@/constants/aciton";
+import { EAction } from "@/constants/action";
 import { getInvalidMessage, getRequiredMessage } from "@/shared/utils";
 import { toDto } from "@/shared/utils/toDto";
 
@@ -55,6 +55,7 @@ export class Permission extends BaseSchema {
         type: String,
         enum: EAction,
         required: true,
+        uppercase: true,
     })
     action: `${EAction}`;
 
@@ -82,9 +83,9 @@ export class Permission extends BaseSchema {
     })
     @Prop({
         type: [String],
-        default: [],
+        default: null,
     })
-    fields: string[];
+    fields: string[] | null;
 
     @ApiProperty({
         example: { _id: "123456" },

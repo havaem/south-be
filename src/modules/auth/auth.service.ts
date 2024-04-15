@@ -1,10 +1,12 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 
+import { ERole } from "@/constants/role";
 import { UserDocument } from "@/schemas/user.schema";
 import { ConfigService } from "@/shared/services/config.service";
 import { IUserJwt } from "@/shared/types";
 
+import { RoleService } from "../role/role.service";
 import { UserService } from "../user/user.service";
 import { AUTH_MESSAGE } from "./auth.message";
 import { LoginDto, LoginResponseDto, RegisterDto } from "./dto";
@@ -14,8 +16,9 @@ import { AuthDto } from "./dto/auth.dto";
 export class AuthService {
     constructor(
         private readonly userService: UserService,
-        private jwtService: JwtService,
-        private configService: ConfigService,
+        private readonly roleService: RoleService,
+        private readonly jwtService: JwtService,
+        private readonly configService: ConfigService,
     ) {}
 
     generateToken(user: UserDocument) {
@@ -42,7 +45,9 @@ export class AuthService {
     }
 
     async register(data: RegisterDto): Promise<UserDocument> {
-        return await this.userService.create(data);
+        const role = await this.roleService.findOne({ name: ERole.USER });
+
+        return await this.userService.create({ ...data, roles: [role] });
     }
 
     async login({ username, password }: LoginDto): Promise<UserDocument> {

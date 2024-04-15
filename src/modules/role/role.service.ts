@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 
-import { Role, RoleDocument } from "@/schemas/role.schema";
+import { RoleDocument } from "@/schemas/role.schema";
 import { DatabaseService } from "@/shared/services/document.service";
 
 import { CreateRoleDto } from "./dto/create-role.dto";
@@ -10,7 +10,7 @@ import { ROLE_MESSAGES } from "./role.message";
 
 @Injectable()
 export class RoleService extends DatabaseService<RoleDocument> {
-    constructor(@InjectModel(Role.name) private roleModel: Model<RoleDocument>) {
+    constructor(@InjectModel("Role") private roleModel: Model<RoleDocument>) {
         super(roleModel, ROLE_MESSAGES);
     }
 

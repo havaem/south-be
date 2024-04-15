@@ -1,10 +1,13 @@
+import { ExtractSubjectType } from "@casl/ability";
 import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 
 import { IS_PUBLIC_KEY } from "@/constants";
-import { CHECK_PERMISSION_KEY } from "@/constants/aciton";
+import { CHECK_PERMISSION_KEY, EAction } from "@/constants/action";
+import { UserService } from "@/modules/user/user.service";
 
-import { AppAbility, CaslAbilityFactory } from "../services/casl.service";
+import { AppAbility, CaslAbilityFactory, Subjects } from "../services/casl.service";
+import { IUserRequest } from "../types";
 import { PermissionHandler } from "../types/casl";
 
 @Injectable()
@@ -12,7 +15,22 @@ export class PermissionsGuard implements CanActivate {
     constructor(
         private reflector: Reflector,
         private caslAbilityFactory: CaslAbilityFactory,
+        private readonly userService: UserService,
     ) {}
+
+    // parseCondition(permissions: PermissionDocument[], currentUser: User) {
+    //     const data = permissions.map((permission) => {
+    //         if (permission.conditions && Object.keys(permission.conditions).length) {
+    //             // const parsedVal = render(permission.conditions, currentUser);
+    //             return {
+    //                 ...permission,
+    //                 // conditions: { created_by: +parsedVal },
+    //             };
+    //         }
+    //         return permission;
+    //     });
+    //     return data;
+    // }
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
@@ -24,10 +42,44 @@ export class PermissionsGuard implements CanActivate {
         const permissionHandlers =
             this.reflector.get<PermissionHandler[]>(CHECK_PERMISSION_KEY, context.getHandler()) || [];
 
-        const { user } = context.switchToHttp().getRequest();
-        console.log("user: ", user);
+        const { user: currentUser }: { user: IUserRequest } = context.switchToHttp().getRequest();
 
-        const ability = this.caslAbilityFactory.createForUser(user);
+        const user = await this.userService.findOne(
+            { _id: currentUser._id },
+            {
+                populate: {
+                    path: "roles",
+                    select: "name permissions",
+                    populate: {
+                        path: "permissions",
+                    },
+                },
+            },
+        );
+
+        if (!user) return false;
+
+        const ability = this.caslAbilityFactory.createAbility(
+            user.roles
+                .map((role) => role.permissions)
+                .flat()
+                .map(({ action, fields, subject, description, conditions }) => {
+                    console.log({
+                        action: EAction[action] as any,
+                        fields,
+                        subject: subject as ExtractSubjectType<Subjects>,
+                        reason: description,
+                        conditions,
+                    });
+                    return {
+                        action: EAction[action] as any,
+                        fields,
+                        subject: subject as ExtractSubjectType<Subjects>,
+                        reason: description,
+                        conditions,
+                    };
+                }),
+        );
 
         return permissionHandlers.every((handler) => this.execPermissionHandler(handler, ability));
     }

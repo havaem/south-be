@@ -1,7 +1,7 @@
 import { ApiProperty, PickType } from "@nestjs/swagger";
 import { Matches } from "class-validator";
 
-import { REGEX } from "@/constants";
+import { REGEX } from "@/constants/regex";
 import { getInvalidMessage } from "@/shared/utils";
 
 import { AuthDto } from "./auth.dto";

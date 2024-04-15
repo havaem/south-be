@@ -4,7 +4,7 @@ import * as bcrypt from "bcrypt";
 import { IsEmail, Matches } from "class-validator";
 import mongoose, { HydratedDocument } from "mongoose";
 
-import { REGEX } from "@/constants";
+import { REGEX } from "@/constants/regex";
 import { ConfigService } from "@/shared/services/config.service";
 import { getInvalidMessage, getRequiredMessage, getUniqueMessage } from "@/shared/utils";
 import { toDto } from "@/shared/utils/toDto";
@@ -102,6 +102,7 @@ const UserSchemaModule = MongooseModule.forFeatureAsync([
                     if (this.isModified("password") || this.isNew) {
                         this.password = await bcrypt.hash(this.password, cfg.appConfig.saltRounds);
                     }
+
                     next();
                 } catch (error) {
                     next(error);

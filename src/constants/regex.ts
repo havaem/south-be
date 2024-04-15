@@ -1,4 +1,4 @@
-export const REGEX = {
+const REGEX = {
     //* 8-20 characters, no special characters, no consecutive dots or underscores
     username: /^(?=[a-zA-Z0-9._]{8,20}$)(?!.*[_.]{2})[^_.].*[^_.]$/,
     //* Minimum eight characters, at least one uppercase letter, one lowercase letter and one number
@@ -13,3 +13,5 @@ export const REGEX = {
     //* 6-digit OTP
     otp: /^\d{6}$/,
 };
+
+export { REGEX };

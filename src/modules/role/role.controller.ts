@@ -1,10 +1,9 @@
 import { Body, Controller } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 
-import { EAction } from "@/constants/aciton";
-import { ERole } from "@/constants/role";
+import { EAction } from "@/constants/action";
 import { Api } from "@/decorators";
-import { CheckPermissions } from "@/decorators/permission";
+import { CheckPermissions } from "@/decorators/permission.decorator";
 import { Role } from "@/schemas";
 import { AppAbility } from "@/shared/services/casl.service";
 
@@ -20,7 +19,6 @@ export class RoleController {
     @Api({
         path: "/",
         method: "POST",
-        roles: [ERole.ADMIN],
         responseMessage: ROLE_MESSAGES.CREATE,
         responseStatus: 201,
     })
