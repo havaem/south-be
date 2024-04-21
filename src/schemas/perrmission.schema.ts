@@ -1,6 +1,6 @@
 import { MongooseModule, Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEnum, IsObject, IsString } from "class-validator";
+import { IsEnum, IsObject, IsOptional, IsString } from "class-validator";
 import { HydratedDocument } from "mongoose";
 
 import { EAction } from "@/constants/action";
@@ -27,9 +27,7 @@ export class Permission extends BaseSchema {
     @Prop({
         type: String,
         trim: true,
-        uppercase: true,
         required: [true, getRequiredMessage("name")],
-        unique: true,
     })
     name: string;
 
@@ -38,6 +36,7 @@ export class Permission extends BaseSchema {
         description: "Permission description.",
         required: false,
     })
+    @IsOptional()
     @IsString()
     @Prop({
         type: String,
@@ -54,8 +53,8 @@ export class Permission extends BaseSchema {
     @Prop({
         type: String,
         enum: EAction,
-        required: true,
-        uppercase: true,
+        required: [true, getRequiredMessage("action")],
+        default: EAction.CREATE,
     })
     action: `${EAction}`;
 
@@ -81,11 +80,12 @@ export class Permission extends BaseSchema {
     @IsString({
         each: true,
     })
+    @IsOptional()
     @Prop({
         type: [String],
-        default: null,
+        default: [],
     })
-    fields: string[] | null;
+    fields: string[];
 
     @ApiProperty({
         example: { _id: "123456" },
@@ -93,6 +93,7 @@ export class Permission extends BaseSchema {
         description: "Conditions.",
     })
     @IsObject()
+    @IsOptional()
     @Prop({
         type: Object,
         default: null,

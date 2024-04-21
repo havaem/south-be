@@ -72,8 +72,8 @@ export class PermissionsGuard implements CanActivate {
                         conditions,
                     });
                     return {
-                        action: EAction[action] as any,
-                        fields,
+                        action: action as EAction,
+                        fields: fields.length ? fields : undefined,
                         subject: subject as ExtractSubjectType<Subjects>,
                         reason: description,
                         conditions,

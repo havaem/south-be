@@ -3,6 +3,8 @@ import { InjectModel } from "@nestjs/mongoose";
 import { CountOptions } from "mongodb";
 import { Document, FilterQuery, Model, MongooseBaseQueryOptions, QueryOptions, UpdateQuery } from "mongoose";
 
+import { convertMessage } from "../utils";
+
 type MongoDBQueryOptions<T> = (CountOptions & MongooseBaseQueryOptions<T>) | null;
 
 export class DatabaseService<T extends Document> {
@@ -75,7 +77,8 @@ export class DatabaseService<T extends Document> {
      */
     async _findOne(filter: FilterQuery<T>, options?: QueryOptions<T>): Promise<T> {
         const result = await this.findOne(filter, options);
-        if (!result) throw new NotFoundException(this.messages["NOT_FOUND"] ?? this.name() + "NOT_FOUND");
+        if (!result)
+            throw new NotFoundException(this.messages["NOT_FOUND"] ?? convertMessage(this.name() + "_NOT_FOUND"));
         return result;
     }
 
