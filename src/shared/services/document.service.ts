@@ -21,6 +21,10 @@ export class DatabaseService<T extends Document> {
         return this.model.countDocuments(filter, options);
     }
 
+    create(data: Partial<T>): Promise<T> {
+        return this.model.create(data);
+    }
+
     countAll(options?: QueryOptions<T>) {
         return this.model.estimatedDocumentCount(options);
     }

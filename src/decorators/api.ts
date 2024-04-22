@@ -4,6 +4,7 @@ import {
     ApiCreatedResponse,
     ApiForbiddenResponse,
     ApiOkResponse,
+    ApiParam,
     ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
 
@@ -57,6 +58,15 @@ export const Api = ({
             decorators.push(Get(path));
             break;
     }
+
+    if (path.split(":").length > 1)
+        decorators.push(
+            ApiParam({
+                name: path.split(":")[1],
+                type: "string",
+                description: "MongoDB ObjectId",
+            }),
+        );
 
     if (permissions) {
         decorators.push(CheckPermissions(...permissions.map((permission) => PERMISSIONS[permission])));

@@ -64,13 +64,13 @@ export class PermissionsGuard implements CanActivate {
                 .map((role) => role.permissions)
                 .flat()
                 .map(({ action, fields, subject, description, conditions }) => {
-                    console.log({
-                        action: EAction[action] as any,
-                        fields,
-                        subject: subject as ExtractSubjectType<Subjects>,
-                        reason: description,
-                        conditions,
-                    });
+                    // console.log({
+                    //     action: EAction[action] as any,
+                    //     fields,
+                    //     subject: subject as ExtractSubjectType<Subjects>,
+                    //     reason: description,
+                    //     conditions,
+                    // });
                     return {
                         action: action as EAction,
                         fields: fields.length ? fields : undefined,
