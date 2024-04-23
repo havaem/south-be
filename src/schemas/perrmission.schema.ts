@@ -98,7 +98,7 @@ export class Permission extends BaseSchema {
         type: Object,
         default: null,
     })
-    conditions: Record<string, unknown> | null;
+    conditions: Record<string, string> | null;
 }
 
 const PermissionSchema = SchemaFactory.createForClass(Permission);

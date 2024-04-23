@@ -58,7 +58,8 @@ export class DatabaseService<T extends Document> {
      */
     async _findById(id: string): Promise<T> {
         const result = await this.model.findById(id);
-        if (!result) throw new NotFoundException(this.messages["NOT_FOUND"] ?? this.name() + "NOT_FOUND");
+        if (!result)
+            throw new NotFoundException(this.messages["NOT_FOUND"] ?? convertMessage(this.name() + "_NOT_FOUND"));
         return result;
     }
 

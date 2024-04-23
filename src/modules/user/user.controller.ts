@@ -32,10 +32,10 @@ export class UserController {
         method: "GET",
         path: "/:id",
         responseMessage: "User details",
-        // permissions: ["USER_GET_ALL"],
+        permissions: ["USER_GET_BY_ID"],
     })
     async findById(@Param("id", MongoId) id: string) {
-        const response = await this.userService.findById(id);
+        const response = await this.userService._findById(id);
         return response.toDto(UserDto);
     }
 }
