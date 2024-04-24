@@ -61,6 +61,6 @@ export class AuthService {
     }
 
     async getProfile(_id: string) {
-        return await this.userService._findOne({ _id });
+        return await this.userService._findById(_id);
     }
 }

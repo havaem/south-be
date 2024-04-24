@@ -5,6 +5,7 @@ import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from "@nestjs/core";
 import { MongooseModule } from "@nestjs/mongoose";
 import mongoose from "mongoose";
 
+import { CaslExceptionFilter } from "./exceptions/casl.exception";
 import { HttpExceptionFilter } from "./exceptions/http.exception";
 import { MongoExceptionFilter } from "./exceptions/mongo.exception";
 import { TransformInterceptor } from "./interceptors/transform.interceptor";
@@ -57,6 +58,10 @@ import { ConfigService } from "./shared/services/config.service";
         {
             provide: APP_FILTER,
             useClass: HttpExceptionFilter,
+        },
+        {
+            provide: APP_FILTER,
+            useClass: CaslExceptionFilter,
         },
         {
             provide: APP_INTERCEPTOR,

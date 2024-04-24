@@ -1,17 +1,16 @@
-import { createMongoAbility, InferSubjects, MongoAbility, RawRuleOf } from "@casl/ability";
+import { createMongoAbility, ForcedSubject, MongoAbility, RawRuleOf } from "@casl/ability";
 import { Injectable } from "@nestjs/common";
 
 import { EAction } from "@/constants/action";
-import { Role, User } from "@/schemas";
 
-export type Subjects = InferSubjects<typeof Role | typeof User> | "all";
+export const subjects = ["Role", "User", "all"] as const;
+export type Subjects = (typeof subjects)[number] | ForcedSubject<Exclude<(typeof subjects)[number], "all">>;
 
 export type AppAbility = MongoAbility<[EAction, Subjects]>;
 
 @Injectable()
 export class CaslAbilityFactory {
     createAbility = (rules: RawRuleOf<AppAbility>[]) => createMongoAbility<AppAbility>(rules);
-    //* FOR EXAMPLE
     // createForUser(user: IUserRequest) {
     //     const { can, build } = new AbilityBuilder<AppAbility>(createMongoAbility);
     //     // if (user.roles.includes(ERole.ADMIN)) {

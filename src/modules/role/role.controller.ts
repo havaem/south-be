@@ -1,11 +1,7 @@
 import { Body, Controller } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 
-import { EAction } from "@/constants/action";
 import { Api } from "@/decorators";
-import { CheckPermissions } from "@/decorators/permission.decorator";
-import { Role } from "@/schemas";
-import { AppAbility } from "@/shared/services/casl.service";
 
 import { CreateRoleDto } from "./dto/create-role.dto";
 import { ROLE_MESSAGES } from "./role.message";
@@ -21,11 +17,10 @@ export class RoleController {
         method: "POST",
         responseMessage: ROLE_MESSAGES.CREATE,
         responseStatus: 201,
+        permissions: ["ROLE_CREATE"],
     })
-    @CheckPermissions((ability: AppAbility) => ability.can(EAction.CREATE, Role))
     create(@Body() createRoleDto: CreateRoleDto) {
-        return {};
-        // return this.roleService.create(createRoleDto);
+        return this.roleService.create(createRoleDto);
     }
 
     // @Get()

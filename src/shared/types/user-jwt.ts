@@ -1,10 +1,9 @@
-import { Role, User } from "@/schemas";
+import { AppAbility } from "../services/casl.service";
 
 export interface IUserJwt {
     _id: string;
     email: string;
 }
 export interface IUserRequest extends IUserJwt {
-    roles: Role[];
-    document: User;
+    ability: AppAbility;
 }

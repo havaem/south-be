@@ -1,8 +1,11 @@
+import { ForbiddenError, subject } from "@casl/ability";
 import { Body, Controller, Param, Post } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 
-import { Api } from "@/decorators";
+import { EAction } from "@/constants";
+import { Api, User } from "@/decorators";
 import { MongoId } from "@/decorators/validator.decorator";
+import { IUserRequest } from "@/shared/types";
 
 import { UserDto } from "./dto";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -34,7 +37,8 @@ export class UserController {
         responseMessage: "User details",
         permissions: ["USER_GET_BY_ID"],
     })
-    async findById(@Param("id", MongoId) id: string) {
+    async findById(@User() user: IUserRequest, @Param("id", MongoId) id: string) {
+        ForbiddenError.from(user.ability).throwUnlessCan(EAction.READ, subject("User", { _id: id }));
         const response = await this.userService._findById(id);
         return response.toDto(UserDto);
     }
