@@ -17,6 +17,26 @@ export const getUniqueMessage = (path: string): string => {
 };
 
 /**
+ * @description get message for maximum length field
+ * @param path {string} - path to the field
+ * @param length {number} - minimum length of the field
+ * @returns {string} message
+ */
+export const getMinLengthMessage = (path: string, length: number): string => {
+    return `${convertMessage(path.toUpperCase())}_SHOULD_BE_AT_LEAST_${length}_CHARACTERS_LONG`;
+};
+
+/**
+ * @description get message for maximum length field
+ * @param path {string} - path to the field
+ * @param length {number} - maximum length of the field
+ * @returns {string} message
+ */
+export const getMaxLengthMessage = (path: string, length: number): string => {
+    return `${convertMessage(path.toUpperCase())}_SHOULD_BE_AT_MOST_${length}_CHARACTERS_LONG`;
+};
+
+/**
  * @description get message for invalid field
  * @param path {string} - path to the field
  * @returns {string} message
