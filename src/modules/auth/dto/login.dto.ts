@@ -1,5 +1,5 @@
 import { ApiProperty, PickType } from "@nestjs/swagger";
-import { Matches } from "class-validator";
+import { IsNotEmpty, IsString, Matches } from "class-validator";
 
 import { REGEX } from "@/constants/regex";
 import { getInvalidMessage } from "@/shared/utils";
@@ -27,4 +27,16 @@ export class LoginResponseDto {
 
     @ApiProperty()
     user: AuthDto;
+}
+
+export class LoginGoogleDto {
+    @ApiProperty({
+        example: "example",
+        description: "Google ID token",
+    })
+    @IsString({
+        message: getInvalidMessage("Google ID token"),
+    })
+    @IsNotEmpty({ message: getInvalidMessage("Google ID token") })
+    token: string;
 }

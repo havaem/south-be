@@ -5,7 +5,7 @@ import { Api, User } from "@/decorators";
 import { IUserRequest } from "@/shared/types";
 
 import { AuthService } from "./auth.service";
-import { LoginDto, RegisterDto } from "./dto";
+import { LoginDto, LoginGoogleDto, RegisterDto } from "./dto";
 import { AuthDto } from "./dto/auth.dto";
 
 @ApiTags("auth")
@@ -34,6 +34,18 @@ export class AuthController {
     })
     async login(@Body() data: LoginDto) {
         const response = this.authService.generateResponse(await this.authService.login(data));
+        return response;
+    }
+
+    @Api({
+        publicRoute: true,
+        method: "POST",
+        path: "login-with-google",
+        responseStatus: HttpStatus.OK,
+        responseMessage: "User logged in successfully",
+    })
+    async loginWithGoogle(@Body() data: LoginGoogleDto) {
+        const response = await this.authService.loginWithGoogle(data);
         return response;
     }
 

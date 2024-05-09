@@ -1,4 +1,5 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { HttpService } from "@nestjs/axios";
+import { BadGatewayException, Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 
 import { ERole } from "@/constants/role";
@@ -9,7 +10,7 @@ import { IUserJwt } from "@/shared/types";
 import { RoleService } from "../role/role.service";
 import { UserService } from "../user/user.service";
 import { AUTH_MESSAGE } from "./auth.message";
-import { LoginDto, LoginResponseDto, RegisterDto } from "./dto";
+import { LoginDto, LoginGoogleDto, LoginResponseDto, RegisterDto } from "./dto";
 import { AuthDto } from "./dto/auth.dto";
 
 @Injectable()
@@ -19,6 +20,7 @@ export class AuthService {
         private readonly roleService: RoleService,
         private readonly jwtService: JwtService,
         private readonly configService: ConfigService,
+        private readonly httpService: HttpService,
     ) {}
 
     generateToken(user: UserDocument) {
@@ -58,6 +60,21 @@ export class AuthService {
         if (!(await user.comparePassword(password))) throw new UnauthorizedException(AUTH_MESSAGE.INVALID_CREDENTIALS);
 
         return user;
+    }
+
+    async loginWithGoogle({ token }: LoginGoogleDto): Promise<any> {
+        const userInfo = this.httpService.axiosRef
+            .get("https://www.googleapis.com/oauth2/v3/tokeninfo", {
+                headers: { Authorization: "Bearer " + token },
+            })
+            .then((res) => {
+                console.log(res.data);
+            })
+            .catch((error) => {
+                console.log("error: ", error);
+                throw new BadGatewayException(AUTH_MESSAGE.INVALID_CREDENTIALS);
+            });
+        console.log(userInfo);
     }
 
     async getProfile(_id: string) {
