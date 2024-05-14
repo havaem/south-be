@@ -6,6 +6,7 @@ import { ERole } from "@/constants/role";
 import { UserDocument } from "@/schemas/user.schema";
 import { ConfigService } from "@/shared/services/config.service";
 import { IUserJwt } from "@/shared/types";
+import { getNameDetail } from "@/utils";
 
 import { RoleService } from "../role/role.service";
 import { UserService } from "../user/user.service";
@@ -62,19 +63,35 @@ export class AuthService {
         return user;
     }
 
-    async loginWithGoogle({ token }: LoginGoogleDto): Promise<any> {
-        const userInfo = this.httpService.axiosRef
-            .get("https://www.googleapis.com/oauth2/v3/tokeninfo", {
+    async loginWithGoogle({ token }: LoginGoogleDto): Promise<LoginResponseDto> {
+        return this.httpService.axiosRef
+            .get<IGoogleAuthResponse>("https://www.googleapis.com/oauth2/v3/userinfo", {
                 headers: { Authorization: "Bearer " + token },
             })
-            .then((res) => {
-                console.log(res.data);
+            .then(async (res) => {
+                const { email, email_verified, given_name, locale } = res.data;
+
+                if (!email_verified) throw new UnauthorizedException(AUTH_MESSAGE.INVALID_CREDENTIALS);
+
+                const user = await this.userService.findOne({ email });
+
+                if (!user) {
+                    const user = await this.userService.create({
+                        email,
+                        name: {
+                            ...getNameDetail(given_name),
+                            display: locale === "vi" ? -1 : 1,
+                        },
+                    });
+                    return this.generateResponse(user);
+                }
+
+                return this.generateResponse(user);
             })
             .catch((error) => {
                 console.log("error: ", error);
                 throw new BadGatewayException(AUTH_MESSAGE.INVALID_CREDENTIALS);
             });
-        console.log(userInfo);
     }
 
     async getProfile(_id: string) {
