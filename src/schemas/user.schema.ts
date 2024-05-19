@@ -38,7 +38,7 @@ export class UserName {
         description: "First name of the user",
     })
     @IsString({ message: ({ property }) => getInvalidMessage(property) })
-    @MinLength(3, { message: ({ property }) => getMinLengthMessage(property, 3) })
+    @MinLength(2, { message: ({ property }) => getMinLengthMessage(property, 2) })
     @MaxLength(20, { message: ({ property }) => getMaxLengthMessage(property, 20) })
     first: string;
 
@@ -47,7 +47,7 @@ export class UserName {
         description: "Middle name of the user",
     })
     @IsString({ message: ({ property }) => getInvalidMessage(property) })
-    @MinLength(3, { message: ({ property }) => getMinLengthMessage(property, 3) })
+    @MinLength(2, { message: ({ property }) => getMinLengthMessage(property, 2) })
     @MaxLength(20, { message: ({ property }) => getMaxLengthMessage(property, 20) })
     @IsOptional()
     middle: string;
@@ -56,7 +56,7 @@ export class UserName {
         required: false,
         description: "Last name of the user",
     })
-    @MinLength(3, { message: ({ property }) => getMinLengthMessage(property, 3) })
+    @MinLength(2, { message: ({ property }) => getMinLengthMessage(property, 2) })
     @MaxLength(20, { message: ({ property }) => getMaxLengthMessage(property, 20) })
     @IsString({ message: ({ property }) => getInvalidMessage(property) })
     @IsOptional()
@@ -101,17 +101,17 @@ export class User extends BaseSchema {
             first: {
                 type: String,
                 required: [true, ({ path }) => getRequiredMessage(path)],
-                minlength: [3, getMinLengthMessage("First name", 3)],
+                minlength: [2, getMinLengthMessage("First name", 2)],
                 maxlength: [20, getMaxLengthMessage("First name", 20)],
             },
             middle: {
                 type: String,
-                minlength: [3, getMinLengthMessage("Middle name", 3)],
+                minlength: [2, getMinLengthMessage("Middle name", 2)],
                 maxlength: [20, getMaxLengthMessage("Middle name", 20)],
             },
             last: {
                 type: String,
-                minlength: [3, getMinLengthMessage("Last name", 3)],
+                minlength: [2, getMinLengthMessage("Last name", 2)],
                 maxlength: [20, getMaxLengthMessage("Last name", 20)],
             },
             display: {
@@ -145,7 +145,7 @@ export class User extends BaseSchema {
         required: [true, ({ path }) => getRequiredMessage(path)],
         validate: {
             validator: (v: string) => REGEX.email.test(v),
-            message: ({ value }) => `${value} is not a valid email!`,
+            message: ({ path }) => getInvalidMessage(path),
         },
     })
     email: string;
@@ -165,7 +165,7 @@ export class User extends BaseSchema {
         required: [true, ({ path }) => getRequiredMessage(path)],
         validate: {
             validator: (v: string) => REGEX.username.test(v),
-            message: ({ value }) => `${value} is not a valid username!`,
+            message: ({ path }) => getInvalidMessage(path),
         },
     })
     username: string;
@@ -182,7 +182,7 @@ export class User extends BaseSchema {
         required: [true, ({ path }) => getRequiredMessage(path)],
         validate: {
             validator: (v: string) => REGEX.password.test(v),
-            message: ({ value }) => `${value} is not a valid password!`,
+            message: ({ path }) => getInvalidMessage(path),
         },
     })
     password: string;
@@ -236,6 +236,7 @@ const UserSchemaModule = MongooseModule.forFeatureAsync([
 
             schema.pre("save", async function (next) {
                 try {
+                    //* if user is new or password is modified
                     if (this.isModified("password") || this.isNew) {
                         this.password = await bcrypt.hash(this.password, cfg.appConfig.saltRounds);
                     }
