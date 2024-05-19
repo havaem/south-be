@@ -16,10 +16,24 @@ export class LoginDto extends PickType(RegisterDto, ["password"]) {
         message: getInvalidMessage("Username or email"),
     })
     username: string;
+
+    @ApiProperty({
+        example: "example",
+        description: "Password",
+    })
+    password: string;
 }
 
-export class LoginResponseDto {
+class TokenDto {
     @ApiProperty()
+    accessToken: string;
+    @ApiProperty()
+    refreshToken: string;
+}
+export class LoginResponseDto {
+    @ApiProperty({
+        type: TokenDto,
+    })
     token: {
         accessToken: string;
         refreshToken: string;

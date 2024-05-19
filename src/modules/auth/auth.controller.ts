@@ -5,7 +5,7 @@ import { Api, User } from "@/decorators";
 import { IUserRequest } from "@/shared/types";
 
 import { AuthService } from "./auth.service";
-import { LoginDto, LoginGoogleDto, RegisterDto } from "./dto";
+import { LoginDto, LoginGoogleDto, LoginResponseDto, RegisterDto } from "./dto";
 import { AuthDto } from "./dto/auth.dto";
 
 @ApiTags("auth")
@@ -31,6 +31,7 @@ export class AuthController {
         path: "login",
         responseStatus: HttpStatus.OK,
         responseMessage: "User logged in successfully",
+        responseType: LoginResponseDto,
     })
     async login(@Body() data: LoginDto) {
         const response = this.authService.generateResponse(await this.authService.login(data));

@@ -5,6 +5,7 @@ import {
     ApiForbiddenResponse,
     ApiOkResponse,
     ApiParam,
+    ApiResponseMetadata,
     ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
 
@@ -20,6 +21,7 @@ interface IProps {
     path?: string;
     responseMessage?: string;
     responseStatus?: number;
+    responseType?: ApiResponseMetadata["type"];
     permissions?: (keyof typeof PERMISSIONS)[];
 }
 export const Api = ({
@@ -28,6 +30,7 @@ export const Api = ({
     path,
     responseMessage,
     responseStatus,
+    responseType,
     permissions,
 }: IProps): MethodDecorator => {
     const decorators: Array<ClassDecorator | MethodDecorator | PropertyDecorator> = [];
@@ -77,7 +80,7 @@ export const Api = ({
 
     switch (responseStatus) {
         case 200:
-            decorators.push(ApiOkResponse({ description: responseMessage }));
+            decorators.push(ApiOkResponse({ description: responseMessage, type: responseType }));
             break;
         case 201:
             decorators.push(ApiCreatedResponse({ description: responseMessage }));

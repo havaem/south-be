@@ -47,7 +47,6 @@ export class UserName {
         description: "Middle name of the user",
     })
     @IsString({ message: ({ property }) => getInvalidMessage(property) })
-    @MinLength(2, { message: ({ property }) => getMinLengthMessage(property, 2) })
     @MaxLength(20, { message: ({ property }) => getMaxLengthMessage(property, 20) })
     @IsOptional()
     middle: string;
@@ -56,7 +55,6 @@ export class UserName {
         required: false,
         description: "Last name of the user",
     })
-    @MinLength(2, { message: ({ property }) => getMinLengthMessage(property, 2) })
     @MaxLength(20, { message: ({ property }) => getMaxLengthMessage(property, 20) })
     @IsString({ message: ({ property }) => getInvalidMessage(property) })
     @IsOptional()
@@ -106,7 +104,6 @@ export class User extends BaseSchema {
             },
             middle: {
                 type: String,
-                minlength: [2, getMinLengthMessage("Middle name", 2)],
                 maxlength: [20, getMaxLengthMessage("Middle name", 20)],
             },
             last: {
@@ -170,10 +167,6 @@ export class User extends BaseSchema {
     })
     username: string;
 
-    @ApiProperty({
-        example: "example123Aa",
-        required: true,
-    })
     @Matches(REGEX.password, {
         message: ({ property }) => getInvalidMessage(property),
     })

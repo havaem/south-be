@@ -1,12 +1,14 @@
 import { HttpService } from "@nestjs/axios";
 import { BadGatewayException, Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
+import { isAxiosError } from "axios";
 
+import { ELocale } from "@/constants";
 import { ERole } from "@/constants/role";
 import { UserDocument } from "@/schemas/user.schema";
 import { ConfigService } from "@/shared/services/config.service";
 import { IUserJwt } from "@/shared/types";
-import { getNameDetail } from "@/utils";
+import { generateRandomPassword, getNameDetail } from "@/utils";
 
 import { RoleService } from "../role/role.service";
 import { UserService } from "../user/user.service";
@@ -47,12 +49,23 @@ export class AuthService {
         };
     }
 
+    /**
+     * Registers a new user.
+     * @param data - The registration data.
+     * @returns A promise that resolves to the created user document.
+     */
     async register(data: RegisterDto): Promise<UserDocument> {
         const role = await this.roleService.findOne({ name: ERole.USER });
 
         return await this.userService.create({ ...data, roles: [role] });
     }
 
+    /**
+     * Authenticates a user by their username and password.
+     * @param {LoginDto} loginDto - The login data containing the username and password.
+     * @returns {Promise<UserDocument>} - The authenticated user.
+     * @throws {UnauthorizedException} - If the provided credentials are invalid.
+     */
     async login({ username, password }: LoginDto): Promise<UserDocument> {
         const user = await this.userService._findOne({
             $or: [{ email: username }, { username }],
@@ -63,6 +76,13 @@ export class AuthService {
         return user;
     }
 
+    /**
+     * Logs in a user using Google authentication.
+     * @param {LoginGoogleDto} options - The login options, including the Google token.
+     * @returns {Promise<LoginResponseDto>} - The login response.
+     * @throws {UnauthorizedException} - If the email is not verified.
+     * @throws {BadGatewayException} - If there is an error during the authentication process.
+     */
     async loginWithGoogle({ token }: LoginGoogleDto): Promise<LoginResponseDto> {
         return this.httpService.axiosRef
             .get<IGoogleAuthResponse>("https://www.googleapis.com/oauth2/v3/userinfo", {
@@ -75,22 +95,23 @@ export class AuthService {
 
                 const user = await this.userService.findOne({ email });
 
-                if (!user) {
-                    const user = await this.userService.create({
-                        email,
-                        name: {
-                            ...getNameDetail(given_name),
-                            display: locale === "vi" ? -1 : 1,
-                        },
-                    });
-                    return this.generateResponse(user);
-                }
+                if (user) return this.generateResponse(user);
 
-                return this.generateResponse(user);
+                const role = await this.roleService.findOne({ name: ERole.USER });
+                const newUser = await this.userService.create({
+                    email,
+                    name: {
+                        ...getNameDetail(given_name),
+                        display: locale === ELocale.VI ? -1 : 1,
+                    },
+                    roles: [role],
+                    password: generateRandomPassword(12),
+                });
+                return this.generateResponse(newUser);
             })
             .catch((error) => {
-                console.log("error: ", error);
-                throw new BadGatewayException(AUTH_MESSAGE.INVALID_CREDENTIALS);
+                if (isAxiosError(error)) throw new BadGatewayException(AUTH_MESSAGE.INVALID_CREDENTIALS);
+                throw error;
             });
     }
 
