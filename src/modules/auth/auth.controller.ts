@@ -19,8 +19,9 @@ export class AuthController {
         path: "register",
         responseStatus: HttpStatus.CREATED,
         responseMessage: "User registered successfully",
+        responseType: LoginResponseDto,
     })
-    async register(@Body() data: RegisterDto) {
+    async register(@Body() data: RegisterDto): Promise<LoginResponseDto> {
         const response = this.authService.generateResponse(await this.authService.register(data));
         return response;
     }
@@ -33,7 +34,7 @@ export class AuthController {
         responseMessage: "User logged in successfully",
         responseType: LoginResponseDto,
     })
-    async login(@Body() data: LoginDto) {
+    async login(@Body() data: LoginDto): Promise<LoginResponseDto> {
         const response = this.authService.generateResponse(await this.authService.login(data));
         return response;
     }
@@ -44,8 +45,9 @@ export class AuthController {
         path: "login-with-google",
         responseStatus: HttpStatus.OK,
         responseMessage: "User logged in successfully",
+        responseType: LoginResponseDto,
     })
-    async loginWithGoogle(@Body() data: LoginGoogleDto) {
+    async loginWithGoogle(@Body() data: LoginGoogleDto): Promise<LoginResponseDto> {
         const response = await this.authService.loginWithGoogle(data);
         return response;
     }
@@ -55,8 +57,9 @@ export class AuthController {
         path: "",
         responseStatus: HttpStatus.OK,
         responseMessage: "Profile retrieved successfully",
+        responseType: AuthDto,
     })
-    async getProfile(@User() { _id }: IUserRequest) {
+    async getProfile(@User() { _id }: IUserRequest): Promise<AuthDto> {
         const response = await this.authService.getProfile(_id);
         return response.toDto(AuthDto);
     }

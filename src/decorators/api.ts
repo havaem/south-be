@@ -1,4 +1,14 @@
-import { applyDecorators, Delete, Get, HttpCode, Patch, Post, Put, RequestMethod } from "@nestjs/common";
+import {
+    applyDecorators,
+    Delete,
+    Get,
+    HttpCode,
+    Patch,
+    Post,
+    Put,
+    RequestMappingMetadata,
+    RequestMethod,
+} from "@nestjs/common";
 import {
     ApiBearerAuth,
     ApiCreatedResponse,
@@ -18,7 +28,7 @@ import { ResponseMessage } from "./response-message.decorator";
 interface IProps {
     publicRoute?: boolean;
     method?: keyof typeof RequestMethod;
-    path?: string;
+    path?: RequestMappingMetadata["path"];
     responseMessage?: string;
     responseStatus?: number;
     responseType?: ApiResponseMetadata["type"];
@@ -61,8 +71,8 @@ export const Api = ({
             decorators.push(Get(path));
             break;
     }
-
-    if (path.split(":").length > 1)
+    //TODO: Handle when path is a array of strings
+    if (typeof path === "string" && path.split(":").length > 1)
         decorators.push(
             ApiParam({
                 name: path.split(":")[1],
@@ -83,10 +93,10 @@ export const Api = ({
             decorators.push(ApiOkResponse({ description: responseMessage, type: responseType }));
             break;
         case 201:
-            decorators.push(ApiCreatedResponse({ description: responseMessage }));
+            decorators.push(ApiCreatedResponse({ description: responseMessage, type: responseType }));
             break;
         default:
-            decorators.push(ApiOkResponse({ description: responseMessage }));
+            decorators.push(ApiOkResponse({ description: responseMessage, type: responseType }));
             break;
     }
 

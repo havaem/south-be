@@ -8,24 +8,13 @@ export class BaseSchema {
     @ApiProperty()
     _id: string;
 
-    @ApiProperty({
-        type: Date,
-        nullable: true,
-        default: null,
-    })
     @Prop({ type: Date, default: null })
     @Exclude()
     deletedAt: Date;
 
-    @ApiProperty({
-        type: Date,
-    })
     @Exclude()
     createdAt: Date;
 
-    @ApiProperty({
-        type: Date,
-    })
     @Exclude()
     updatedAt: Date;
 
