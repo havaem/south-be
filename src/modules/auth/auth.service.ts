@@ -106,6 +106,7 @@ export class AuthService {
                     },
                     roles: [role],
                     password: generateRandomPassword(12),
+                    locale: locale === ELocale.VI ? ELocale.VI : ELocale.EN,
                 });
                 return this.generateResponse(newUser);
             })

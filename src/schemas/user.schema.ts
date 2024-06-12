@@ -16,6 +16,7 @@ import {
 } from "class-validator";
 import mongoose, { HydratedDocument } from "mongoose";
 
+import { ELocale } from "@/constants";
 import { REGEX } from "@/constants/regex";
 import { ConfigService } from "@/shared/services/config.service";
 import {
@@ -105,6 +106,7 @@ export class User extends BaseSchema {
             middle: {
                 type: String,
                 maxlength: [20, getMaxLengthMessage("Middle name", 20)],
+                default: "",
             },
             last: {
                 type: String,
@@ -210,6 +212,17 @@ export class User extends BaseSchema {
         isActive: boolean;
         isFirstLogin: boolean;
     };
+
+    @ApiProperty({
+        enum: ELocale,
+        default: ELocale.VI,
+    })
+    @Prop({
+        type: String,
+        enum: ELocale,
+        default: ELocale.VI,
+    })
+    locale: ELocale;
 
     comparePassword: (password: string) => Promise<boolean>;
 }

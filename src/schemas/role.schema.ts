@@ -8,7 +8,6 @@ import { toDto } from "@/shared/utils/toDto";
 
 import { BaseSchema } from "./base.schema";
 import { Permission } from "./perrmission.schema";
-import { User } from "./user.schema";
 
 export type RoleDocument = HydratedDocument<Role>;
 
@@ -55,18 +54,6 @@ export class Role extends BaseSchema {
         default: [],
     })
     permissions: Permission[];
-
-    @ApiProperty({
-        type: [User],
-        required: false,
-        description: "Users that have this role.",
-    })
-    @Prop({
-        type: [mongoose.Schema.Types.ObjectId],
-        ref: User.name,
-        default: [],
-    })
-    users: User[];
 }
 
 const RoleSchema = SchemaFactory.createForClass(Role);
