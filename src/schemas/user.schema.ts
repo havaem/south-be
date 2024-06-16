@@ -1,3 +1,5 @@
+import "dotenv/config";
+
 import { MongooseModule, Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import * as bcrypt from "bcrypt";
@@ -9,6 +11,7 @@ import {
     IsObject,
     IsOptional,
     IsString,
+    IsUrl,
     Matches,
     MaxLength,
     MinLength,
@@ -148,6 +151,17 @@ export class User extends BaseSchema {
         },
     })
     email: string;
+
+    @ApiProperty({
+        example: "https://github.com/havaem.png",
+        required: false,
+    })
+    @IsUrl()
+    @Prop({
+        type: String,
+        default: process.env.DEFAULT_AVATAR ?? "https://github.com/havaem.png",
+    })
+    avatar: string;
 
     @ApiProperty({
         example: "example",
