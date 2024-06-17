@@ -89,7 +89,7 @@ export class AuthService {
                 headers: { Authorization: "Bearer " + token },
             })
             .then(async (res) => {
-                const { email, email_verified, given_name, locale } = res.data;
+                const { email, email_verified, given_name, locale, picture: avatar } = res.data;
 
                 if (!email_verified) throw new UnauthorizedException(AUTH_MESSAGE.INVALID_CREDENTIALS);
 
@@ -107,6 +107,7 @@ export class AuthService {
                     roles: [role],
                     password: generateRandomPassword(12),
                     locale: locale === ELocale.VI ? ELocale.VI : ELocale.EN,
+                    avatar,
                 });
                 return this.generateResponse(newUser);
             })
