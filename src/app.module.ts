@@ -4,6 +4,7 @@ import { ConfigModule } from "@nestjs/config";
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from "@nestjs/core";
 import { MongooseModule } from "@nestjs/mongoose";
 import mongoose from "mongoose";
+import { NestjsFormDataModule } from "nestjs-form-data";
 
 import { CaslExceptionFilter } from "./exceptions/casl.exception";
 import { HttpExceptionFilter } from "./exceptions/http.exception";
@@ -11,6 +12,7 @@ import { MongoExceptionFilter } from "./exceptions/mongo.exception";
 import { TransformInterceptor } from "./interceptors/transform.interceptor";
 import { AuthModule } from "./modules/auth/auth.module";
 import { PermissionModule } from "./modules/permission/permission.module";
+import { PostModule } from "./modules/post/post.module";
 import { RoleModule } from "./modules/role/role.module";
 import { UserModule } from "./modules/user/user.module";
 import { AuthGuard } from "./shared/guards/auth.guard";
@@ -20,6 +22,7 @@ import { ConfigService } from "./shared/services/config.service";
 
 @Module({
     imports: [
+        NestjsFormDataModule.config({ isGlobal: true }),
         ConfigModule.forRoot({
             isGlobal: true,
             envFilePath: ".env",
@@ -35,6 +38,7 @@ import { ConfigService } from "./shared/services/config.service";
             inject: [ConfigService],
         }),
         GlobalModule,
+        PostModule,
         UserModule,
         AuthModule,
         RoleModule,

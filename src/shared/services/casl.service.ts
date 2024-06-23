@@ -3,7 +3,7 @@ import { Injectable } from "@nestjs/common";
 
 import { EAction } from "@/constants/action";
 
-export const subjects = ["Role", "User", "all"] as const;
+export const subjects = ["Role", "User", "Post", "Comment", "Like", "all"] as const;
 export type Subjects = (typeof subjects)[number] | ForcedSubject<Exclude<(typeof subjects)[number], "all">>;
 
 export type AppAbility = MongoAbility<[EAction, Subjects]>;

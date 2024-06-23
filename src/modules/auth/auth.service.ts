@@ -57,7 +57,7 @@ export class AuthService {
     async register(data: RegisterDto): Promise<UserDocument> {
         const role = await this.roleService.findOne({ name: ERole.USER });
 
-        return await this.userService.create({ ...data, roles: [role] });
+        return await this.userService.addPost({ ...data, roles: [role] });
     }
 
     /**
@@ -98,7 +98,7 @@ export class AuthService {
                 if (user) return this.generateResponse(user);
 
                 const role = await this.roleService.findOne({ name: ERole.USER });
-                const newUser = await this.userService.create({
+                const newUser = await this.userService.addPost({
                     email,
                     name: {
                         ...getNameDetail(given_name),

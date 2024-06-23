@@ -20,7 +20,7 @@ export class RoleController {
         permissions: ["ROLE_CREATE"],
     })
     create(@Body() createRoleDto: CreateRoleDto) {
-        return this.roleService.create(createRoleDto);
+        return this.roleService.addPost(createRoleDto);
     }
 
     // @Get()

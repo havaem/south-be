@@ -21,7 +21,7 @@ export function swaggerConfig(app: INestApplication, path: string): void {
                         scheme: "bearer",
                         bearerFormat: "JWT",
                     },
-                    value: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NDBiZWU1MGY5ZGEyOTYzOGQzZGMzMDYiLCJ1c2VybmFtZSI6InZobnZvaG9haW5hbSIsImlhdCI6MTY5NTExNzk3MiwiZXhwIjoxNjk4NzE3OTcyfQ.ycNDHtijf8T2s9t8boY2pNk8KAjYdtS_ykdTwyuP7s8",
+                    value: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NjY5YmQ2NDhiMGUwZmEwZGRmODIxMDQiLCJlbWFpbCI6ImV4YW1wbGUyQGdtYWlsLmNvbSIsImlhdCI6MTcxOTE0NjAzOCwiZXhwIjoxNzE5MjMyNDM4fQ.snNtzYQ0gVIigfkiBXsAiBLeKc8VBJqxoH1m3tW4wQg",
                 },
             },
         },
