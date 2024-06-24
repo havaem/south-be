@@ -68,6 +68,7 @@ export class ConfigService {
             //* Swagger Config
             swaggerPath: this.getString("PREFIX") + this.getString("SWAGGER_PATH"),
             documentEnabled: this.getBoolean("ENABLE_DOCUMENTATION"),
+            onedriveClientId: this.getString("ONEDRIVE_CLIENT_ID"),
         };
     }
 
