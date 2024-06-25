@@ -11,6 +11,7 @@ import { HttpExceptionFilter } from "./exceptions/http.exception";
 import { MongoExceptionFilter } from "./exceptions/mongo.exception";
 import { TransformInterceptor } from "./interceptors/transform.interceptor";
 import { AuthModule } from "./modules/auth/auth.module";
+import { CloudflareModule } from "./modules/cloudflare/cloudflare.module";
 import { PermissionModule } from "./modules/permission/permission.module";
 import { PostModule } from "./modules/post/post.module";
 import { RoleModule } from "./modules/role/role.module";
@@ -39,6 +40,7 @@ import { ConfigService } from "./shared/services/config.service";
         }),
         GlobalModule,
         PostModule,
+        CloudflareModule,
         UserModule,
         AuthModule,
         RoleModule,

@@ -21,6 +21,7 @@
         "new:resource": "nest g resource modules/$@ --no-spec"
     },
     "dependencies": {
+        "@aws-sdk/client-s3": "^3.600.0",
         "@casl/ability": "^6.7.1",
         "@casl/mongoose": "^8.0.1",
         "@nestjs/axios": "^3.0.2",

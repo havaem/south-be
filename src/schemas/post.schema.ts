@@ -1,7 +1,7 @@
 import { MongooseModule, Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsEnum, IsMongoId, IsOptional, IsUrl, ValidateNested } from "class-validator";
+import { IsEnum, IsMongoId, IsOptional, IsString, IsUrl, ValidateNested } from "class-validator";
 import mongoose, { HydratedDocument } from "mongoose";
 
 import { EMedia } from "@/constants/media";
@@ -12,7 +12,7 @@ import { toDto } from "@/shared/utils/toDto";
 import { BaseSchema } from "./base.schema";
 import { Comment } from "./comment.schema";
 import { Like } from "./like.schema";
-import { User } from "./user.schema";
+import { User, UserDocument } from "./user.schema";
 
 export type PostDocument = HydratedDocument<Post>;
 
@@ -54,7 +54,7 @@ export class Post extends BaseSchema {
         ref: User.name,
         required: [true, ({ path }) => getRequiredMessage(path)],
     })
-    author: User;
+    author: UserDocument | string;
 
     @ApiProperty({
         type: [PostMedia],
@@ -66,13 +66,14 @@ export class Post extends BaseSchema {
                 enum: EMedia,
             },
             url: String,
+            _id: false,
         },
     ])
     @IsOptional()
     @ValidateNested({ each: true })
     @Type(() => PostMedia)
     media: {
-        type: EMedia;
+        type: string;
         url: string;
     }[];
 
@@ -101,6 +102,7 @@ export class Post extends BaseSchema {
         type: [Object],
         required: true,
     })
+    @IsString()
     @Prop({
         type: mongoose.Schema.Types.Mixed,
         required: [true, ({ path }) => getRequiredMessage(path)],

@@ -68,7 +68,15 @@ export class ConfigService {
             //* Swagger Config
             swaggerPath: this.getString("PREFIX") + this.getString("SWAGGER_PATH"),
             documentEnabled: this.getBoolean("ENABLE_DOCUMENTATION"),
-            onedriveClientId: this.getString("ONEDRIVE_CLIENT_ID"),
+        };
+    }
+
+    get cloudflareConfig() {
+        return {
+            accountId: this.getString("CLOUDFLARE_ACCOUNT_ID"),
+            accessKeyId: this.getString("CLOUDFLARE_R2_ACCESS_KEY_ID"),
+            secretAccessKey: this.getString("CLOUDFLARE_R2_SECRET_ACCESS_KEY"),
+            bucketName: this.getString("CLOUDFLARE_R2_BUCKET_NAME"),
         };
     }
 

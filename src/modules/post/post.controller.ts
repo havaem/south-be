@@ -2,7 +2,8 @@ import { Body, Controller } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { FormDataRequest, HasMimeType, IsFile, MaxFileSize, MemoryStoredFile } from "nestjs-form-data";
 
-import { Api } from "@/decorators";
+import { Api, User } from "@/decorators";
+import { IUserRequest } from "@/shared/types";
 
 import { CreatePostDto } from "./dto/create-post.dto";
 import { POST_MESSAGES } from "./post.message";
@@ -27,7 +28,16 @@ export class PostController {
         permissions: ["POST_CREATE"],
     })
     @FormDataRequest()
-    create(@Body() createPostDto: CreatePostDto) {
-        return this.postService.addPost(createPostDto);
+    create(@Body() createPostDto: CreatePostDto, @User() user: IUserRequest) {
+        return this.postService.addPost(createPostDto, user._id);
+    }
+
+    @Api({
+        path: "/",
+        responseMessage: POST_MESSAGES.FIND_ALL,
+        responseStatus: 200,
+    })
+    findAll() {
+        return this.postService.find({}).populate("author", "name avatar");
     }
 }
