@@ -4,6 +4,7 @@ import { ApiTags } from "@nestjs/swagger";
 import { Api, User } from "@/decorators";
 import { IUserRequest } from "@/shared/types";
 
+import { AUTH_MESSAGES } from "./auth.message";
 import { AuthService } from "./auth.service";
 import { LoginDto, LoginGoogleDto, LoginResponseDto, RegisterDto } from "./dto";
 import { AuthDto } from "./dto/auth.dto";
@@ -18,11 +19,11 @@ export class AuthController {
         method: "POST",
         path: "register",
         responseStatus: HttpStatus.CREATED,
-        responseMessage: "User registered successfully",
+        responseMessage: AUTH_MESSAGES.REGISTER_SUCCESS,
         responseType: LoginResponseDto,
     })
     async register(@Body() data: RegisterDto): Promise<LoginResponseDto> {
-        const response = this.authService.generateResponse(await this.authService.register(data));
+        const response = await this.authService.register(data);
         return response;
     }
 
@@ -31,11 +32,11 @@ export class AuthController {
         method: "POST",
         path: "login",
         responseStatus: HttpStatus.OK,
-        responseMessage: "User logged in successfully",
+        responseMessage: AUTH_MESSAGES.LOGIN_SUCCESS,
         responseType: LoginResponseDto,
     })
     async login(@Body() data: LoginDto): Promise<LoginResponseDto> {
-        const response = this.authService.generateResponse(await this.authService.login(data));
+        const response = await this.authService.login(data);
         return response;
     }
 
@@ -44,7 +45,7 @@ export class AuthController {
         method: "POST",
         path: "login-with-google",
         responseStatus: HttpStatus.OK,
-        responseMessage: "User logged in successfully",
+        responseMessage: AUTH_MESSAGES.LOGIN_SUCCESS,
         responseType: LoginResponseDto,
     })
     async loginWithGoogle(@Body() data: LoginGoogleDto): Promise<LoginResponseDto> {
@@ -56,7 +57,7 @@ export class AuthController {
         method: "GET",
         path: "",
         responseStatus: HttpStatus.OK,
-        responseMessage: "Profile retrieved successfully",
+        responseMessage: AUTH_MESSAGES.GET_PROFILE_SUCCESS,
         responseType: AuthDto,
     })
     async getProfile(@User() { _id }: IUserRequest): Promise<AuthDto> {

@@ -1,75 +1,21 @@
 import "dotenv/config";
 
 import { MongooseModule, Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiHideProperty, ApiProperty } from "@nestjs/swagger";
 import * as bcrypt from "bcrypt";
-import { Type } from "class-transformer";
-import {
-    IsBoolean,
-    IsEmail,
-    IsNotEmptyObject,
-    IsObject,
-    IsOptional,
-    IsString,
-    IsUrl,
-    Matches,
-    MaxLength,
-    MinLength,
-    ValidateNested,
-} from "class-validator";
+import { IsBoolean, IsEmail, Matches } from "class-validator";
 import mongoose, { HydratedDocument } from "mongoose";
 
 import { ELocale } from "@/constants";
 import { REGEX } from "@/constants/regex";
 import { ConfigService } from "@/shared/services/config.service";
-import {
-    getInvalidMessage,
-    getMaxLengthMessage,
-    getMinLengthMessage,
-    getRequiredMessage,
-    getUniqueMessage,
-} from "@/shared/utils";
+import { getInvalidMessage, getRequiredMessage, getUniqueMessage } from "@/shared/utils";
 import { toDto } from "@/shared/utils/toDto";
 
 import { BaseSchema } from "./base.schema";
 import { Role } from "./role.schema";
 
 export type UserDocument = HydratedDocument<User>;
-
-export class UserName {
-    @ApiProperty({
-        required: true,
-        description: "First name of the user",
-    })
-    @IsString({ message: ({ property }) => getInvalidMessage(property) })
-    @MinLength(2, { message: ({ property }) => getMinLengthMessage(property, 2) })
-    @MaxLength(20, { message: ({ property }) => getMaxLengthMessage(property, 20) })
-    first: string;
-
-    @ApiProperty({
-        required: false,
-        description: "Middle name of the user",
-    })
-    @IsString({ message: ({ property }) => getInvalidMessage(property) })
-    @MaxLength(20, { message: ({ property }) => getMaxLengthMessage(property, 20) })
-    @IsOptional()
-    middle: string;
-
-    @ApiProperty({
-        required: false,
-        description: "Last name of the user",
-    })
-    @MaxLength(20, { message: ({ property }) => getMaxLengthMessage(property, 20) })
-    @IsString({ message: ({ property }) => getInvalidMessage(property) })
-    @IsOptional()
-    last: string;
-
-    @ApiProperty({
-        description: "1: first middle last, -1: last middle first",
-    })
-    @IsOptional()
-    display: number;
-}
 
 export class UserStatus {
     @IsBoolean()
@@ -91,52 +37,6 @@ export class UserStatus {
 })
 export class User extends BaseSchema {
     @ApiProperty({
-        type: UserName,
-    })
-    @IsNotEmptyObject()
-    @IsObject()
-    @ValidateNested()
-    @Type(() => UserName)
-    @Prop({
-        _id: false,
-        type: {
-            first: {
-                type: String,
-                required: [true, ({ path }) => getRequiredMessage(path)],
-                minlength: [2, getMinLengthMessage("First name", 2)],
-                maxlength: [20, getMaxLengthMessage("First name", 20)],
-            },
-            middle: {
-                type: String,
-                maxlength: [20, getMaxLengthMessage("Middle name", 20)],
-                default: "",
-            },
-            last: {
-                type: String,
-                minlength: [2, getMinLengthMessage("Last name", 2)],
-                maxlength: [20, getMaxLengthMessage("Last name", 20)],
-            },
-            display: {
-                type: Number,
-                required: [true, ({ path }) => getRequiredMessage(path)],
-                enum: {
-                    values: [1, -1],
-                    message: ({ path }) => getInvalidMessage(path),
-                },
-                default: 1,
-            },
-        },
-    })
-    name: {
-        first: string;
-        middle: string;
-        last: string;
-        //* 1: first middle last
-        //* -1: last middle first
-        display: number;
-    };
-
-    @ApiProperty({
         example: "example@gmail.com",
         required: true,
     })
@@ -151,17 +51,6 @@ export class User extends BaseSchema {
         },
     })
     email: string;
-
-    @ApiProperty({
-        example: "https://github.com/havaem.png",
-        required: false,
-    })
-    @IsUrl()
-    @Prop({
-        type: String,
-        default: process.env.DEFAULT_AVATAR ?? "https://github.com/havaem.png",
-    })
-    avatar: string;
 
     @ApiProperty({
         example: "example",
@@ -183,6 +72,7 @@ export class User extends BaseSchema {
     })
     username: string;
 
+    @ApiHideProperty()
     @Matches(REGEX.password, {
         message: ({ property }) => getInvalidMessage(property),
     })
@@ -243,6 +133,15 @@ export class User extends BaseSchema {
 
 const UserSchema = SchemaFactory.createForClass(User);
 UserSchema.methods["toDto"] = toDto;
+
+type UserProps = keyof User;
+
+export const UserPopulate = (data?: UserProps[]) => {
+    const defaultOptions: UserProps[] = ["_id", "username", "email"];
+    return {
+        select: data ? defaultOptions.concat(data).join(" ") : defaultOptions.join(" "),
+    };
+};
 
 const UserSchemaModule = MongooseModule.forFeatureAsync([
     {

@@ -1,7 +1,15 @@
 import { NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { CountOptions } from "mongodb";
-import { Document, FilterQuery, Model, MongooseBaseQueryOptions, QueryOptions, UpdateQuery } from "mongoose";
+import {
+    CreateOptions,
+    Document,
+    FilterQuery,
+    Model,
+    MongooseBaseQueryOptions,
+    QueryOptions,
+    UpdateQuery,
+} from "mongoose";
 
 import { convertMessage } from "../utils";
 
@@ -13,6 +21,10 @@ export class DatabaseService<T extends Document> {
         private readonly messages: Record<string, string>,
     ) {}
 
+    get _model() {
+        return this.model;
+    }
+
     name() {
         return this.model.modelName;
     }
@@ -23,6 +35,10 @@ export class DatabaseService<T extends Document> {
 
     create(data: Partial<T>): Promise<T> {
         return this.model.create(data);
+    }
+
+    createMany(data: Array<Partial<T>>, options?: CreateOptions): Promise<T[]> {
+        return this.model.create(data, options);
     }
 
     countAll(options?: QueryOptions<T>) {

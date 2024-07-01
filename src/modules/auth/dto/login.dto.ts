@@ -30,6 +30,7 @@ class TokenDto {
     @ApiProperty()
     refreshToken: string;
 }
+
 export class LoginResponseDto {
     @ApiProperty({
         type: TokenDto,

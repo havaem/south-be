@@ -6,6 +6,7 @@ import { MongooseModule } from "@nestjs/mongoose";
 import mongoose from "mongoose";
 import { NestjsFormDataModule } from "nestjs-form-data";
 
+import { AllExceptionFilter } from "./exceptions/all.exception";
 import { CaslExceptionFilter } from "./exceptions/casl.exception";
 import { HttpExceptionFilter } from "./exceptions/http.exception";
 import { MongoExceptionFilter } from "./exceptions/mongo.exception";
@@ -14,6 +15,7 @@ import { AuthModule } from "./modules/auth/auth.module";
 import { CloudflareModule } from "./modules/cloudflare/cloudflare.module";
 import { PermissionModule } from "./modules/permission/permission.module";
 import { PostModule } from "./modules/post/post.module";
+import { ProfileModule } from "./modules/profile/profile.module";
 import { RoleModule } from "./modules/role/role.module";
 import { UserModule } from "./modules/user/user.module";
 import { AuthGuard } from "./shared/guards/auth.guard";
@@ -32,6 +34,8 @@ import { ConfigService } from "./shared/services/config.service";
             imports: [GlobalModule],
             useFactory: async (cfg: ConfigService) => {
                 mongoose.plugin(accessibleRecordsPlugin);
+                mongoose.plugin(require("mongoose-autopopulate"));
+
                 return {
                     uri: cfg.mongoUri,
                 };
@@ -45,6 +49,7 @@ import { ConfigService } from "./shared/services/config.service";
         AuthModule,
         RoleModule,
         PermissionModule,
+        ProfileModule,
     ],
     controllers: [],
     providers: [
@@ -56,6 +61,10 @@ import { ConfigService } from "./shared/services/config.service";
         {
             provide: APP_GUARD,
             useClass: PermissionsGuard,
+        },
+        {
+            provide: APP_FILTER,
+            useClass: AllExceptionFilter,
         },
         {
             provide: APP_FILTER,

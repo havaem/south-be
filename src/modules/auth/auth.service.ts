@@ -5,14 +5,19 @@ import { isAxiosError } from "axios";
 
 import { ELocale } from "@/constants";
 import { ERole } from "@/constants/role";
+import { ProfileDocument } from "@/schemas/profile.schema";
 import { UserDocument } from "@/schemas/user.schema";
 import { ConfigService } from "@/shared/services/config.service";
+import { DatabaseSession } from "@/shared/services/db.service";
 import { IUserJwt } from "@/shared/types";
 import { generateRandomPassword, getNameDetail } from "@/utils";
 
+import { CreateProfileDto } from "../profile/dto/create-profile.dto";
+import { ProfileService } from "../profile/profile.service";
 import { RoleService } from "../role/role.service";
+import { CreateUserDto } from "../user/dto";
 import { UserService } from "../user/user.service";
-import { AUTH_MESSAGE } from "./auth.message";
+import { AUTH_MESSAGES } from "./auth.message";
 import { LoginDto, LoginGoogleDto, LoginResponseDto, RegisterDto } from "./dto";
 import { AuthDto } from "./dto/auth.dto";
 
@@ -24,6 +29,8 @@ export class AuthService {
         private readonly jwtService: JwtService,
         private readonly configService: ConfigService,
         private readonly httpService: HttpService,
+        private readonly profileService: ProfileService,
+        private readonly databaseSession: DatabaseSession,
     ) {}
 
     generateToken(user: UserDocument) {
@@ -39,6 +46,7 @@ export class AuthService {
             expiresIn: this.configService.authConfig.jwtRefreshExpirationTime,
             secret: this.configService.authConfig.jwtRefreshSecretKey,
         });
+
         return { accessToken, refreshToken };
     }
 
@@ -49,15 +57,50 @@ export class AuthService {
         };
     }
 
+    async createUser(
+        data: CreateUserDto,
+        profileData?: Partial<CreateProfileDto>,
+    ): Promise<{ user: UserDocument; profile: ProfileDocument }> {
+        await this.databaseSession.start();
+        try {
+            const role = await this.roleService.findOne({ name: ERole.USER });
+
+            const newUser = await this.userService.createMany([{ ...data, roles: [role] }], {
+                session: this.databaseSession.session,
+            });
+
+            const newProfile = await this.profileService.createMany(
+                [
+                    {
+                        user: newUser[0],
+                        name: profileData.name,
+                        avatar: profileData.avatar,
+                    },
+                ],
+                {
+                    session: this.databaseSession.session,
+                },
+            );
+
+            await this.databaseSession.commit();
+            return {
+                user: newUser[0],
+                profile: newProfile[0],
+            };
+        } catch (error) {
+            await this.databaseSession.abort();
+            throw error;
+        }
+    }
+
     /**
      * Registers a new user.
      * @param data - The registration data.
      * @returns A promise that resolves to the created user document.
      */
-    async register(data: RegisterDto): Promise<UserDocument> {
-        const role = await this.roleService.findOne({ name: ERole.USER });
-
-        return await this.userService.create({ ...data, roles: [role] });
+    async register(data: RegisterDto): Promise<LoginResponseDto> {
+        const { name, ...others } = data;
+        return await this.generateResponse((await this.createUser(others, { name })).user);
     }
 
     /**
@@ -66,14 +109,13 @@ export class AuthService {
      * @returns {Promise<UserDocument>} - The authenticated user.
      * @throws {UnauthorizedException} - If the provided credentials are invalid.
      */
-    async login({ username, password }: LoginDto): Promise<UserDocument> {
+    async login({ username, password }: LoginDto): Promise<LoginResponseDto> {
         const user = await this.userService._findOne({
             $or: [{ email: username }, { username }],
         });
+        if (!(await user.comparePassword(password))) throw new UnauthorizedException(AUTH_MESSAGES.INVALID_CREDENTIALS);
 
-        if (!(await user.comparePassword(password))) throw new UnauthorizedException(AUTH_MESSAGE.INVALID_CREDENTIALS);
-
-        return user;
+        return this.generateResponse(user);
     }
 
     /**
@@ -91,28 +133,34 @@ export class AuthService {
             .then(async (res) => {
                 const { email, email_verified, given_name, locale, picture: avatar } = res.data;
 
-                if (!email_verified) throw new UnauthorizedException(AUTH_MESSAGE.INVALID_CREDENTIALS);
+                if (!email_verified) throw new UnauthorizedException(AUTH_MESSAGES.INVALID_CREDENTIALS);
 
                 const user = await this.userService.findOne({ email });
 
                 if (user) return this.generateResponse(user);
 
                 const role = await this.roleService.findOne({ name: ERole.USER });
-                const newUser = await this.userService.create({
-                    email,
-                    name: {
-                        ...getNameDetail(given_name),
-                        display: locale === ELocale.VI ? -1 : 1,
+
+                const newUser = await this.createUser(
+                    {
+                        email,
+                        roles: [role],
+                        password: generateRandomPassword(12),
+                        locale: locale === ELocale.VI ? ELocale.VI : ELocale.EN,
                     },
-                    roles: [role],
-                    password: generateRandomPassword(12),
-                    locale: locale === ELocale.VI ? ELocale.VI : ELocale.EN,
-                    avatar,
-                });
-                return this.generateResponse(newUser);
+                    {
+                        name: {
+                            ...getNameDetail(given_name),
+                            display: locale === ELocale.VI ? -1 : 1,
+                        },
+                        avatar,
+                    },
+                );
+
+                return this.generateResponse(newUser.user);
             })
             .catch((error) => {
-                if (isAxiosError(error)) throw new BadGatewayException(AUTH_MESSAGE.INVALID_CREDENTIALS);
+                if (isAxiosError(error)) throw new BadGatewayException(AUTH_MESSAGES.INVALID_CREDENTIALS);
                 throw error;
             });
     }

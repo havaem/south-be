@@ -4,6 +4,7 @@ import { JwtModule, JwtService } from "@nestjs/jwt";
 
 import { CaslAbilityFactory } from "../services/casl.service";
 import { ConfigService } from "../services/config.service";
+import { DatabaseSession } from "../services/db.service";
 import { CaslModule } from "./casl.module";
 
 const imports = [
@@ -14,7 +15,7 @@ const imports = [
     JwtModule.register({}),
     CaslModule,
 ];
-const providers = [ConfigService, JwtService, CaslAbilityFactory];
+const providers = [ConfigService, JwtService, CaslAbilityFactory, DatabaseSession];
 
 @Global()
 @Module({

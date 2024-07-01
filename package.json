@@ -39,6 +39,7 @@
         "class-validator": "^0.14.1",
         "compression": "^1.7.4",
         "mongoose": "^8.2.4",
+        "mongoose-autopopulate": "^1.1.0",
         "morgan": "^1.10.0",
         "mustache": "^4.2.0",
         "nestjs-form-data": "^1.9.9",
