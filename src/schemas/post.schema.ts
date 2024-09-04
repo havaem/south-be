@@ -83,7 +83,7 @@ export class Post extends BaseSchema {
     })
     @Prop({
         type: [mongoose.Schema.Types.ObjectId],
-        ref: Like.name,
+        ref: "Like",
         default: [],
     })
     likes: Like[];

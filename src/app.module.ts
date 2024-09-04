@@ -22,6 +22,9 @@ import { AuthGuard } from "./shared/guards/auth.guard";
 import { PermissionsGuard } from "./shared/guards/permission.guard";
 import { GlobalModule } from "./shared/modules/global.module";
 import { ConfigService } from "./shared/services/config.service";
+import { SpriteModule } from './modules/sprite/sprite.module';
+import { ResourceModule } from './modules/resource/resource.module';
+import { AnimationModule } from './modules/animation/animation.module';
 
 @Module({
     imports: [
@@ -50,6 +53,9 @@ import { ConfigService } from "./shared/services/config.service";
         RoleModule,
         PermissionModule,
         ProfileModule,
+        SpriteModule,
+        ResourceModule,
+        AnimationModule,
     ],
     controllers: [],
     providers: [
