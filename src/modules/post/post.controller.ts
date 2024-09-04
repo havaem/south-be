@@ -3,6 +3,7 @@ import { ApiTags } from "@nestjs/swagger";
 import { FormDataRequest, HasMimeType, IsFile, MaxFileSize, MemoryStoredFile } from "nestjs-form-data";
 
 import { Api, User } from "@/decorators";
+import { ProfilePopulate } from "@/schemas/profile.schema";
 import { IUserRequest } from "@/shared/types";
 
 import { CreatePostDto } from "./dto/create-post.dto";
@@ -38,6 +39,6 @@ export class PostController {
         responseStatus: 200,
     })
     findAll() {
-        return this.postService.find({}).populate("author", "name avatar");
+        return this.postService.find({}).populate("author_profile", ProfilePopulate(["user"]).select);
     }
 }

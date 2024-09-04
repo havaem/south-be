@@ -12,6 +12,7 @@ import { toDto } from "@/shared/utils/toDto";
 import { BaseSchema } from "./base.schema";
 import { Comment } from "./comment.schema";
 import { Like } from "./like.schema";
+import { Profile } from "./profile.schema";
 import { User, UserDocument } from "./user.schema";
 
 export type PostDocument = HydratedDocument<Post>;
@@ -42,6 +43,9 @@ class PostMedia {
 @Schema({
     timestamps: true,
     versionKey: false,
+    toJSON: {
+        virtuals: true,
+    },
 })
 export class Post extends BaseSchema {
     @ApiProperty({
@@ -55,6 +59,7 @@ export class Post extends BaseSchema {
         required: [true, ({ path }) => getRequiredMessage(path)],
     })
     author: UserDocument | string;
+    author_profile: Profile;
 
     @ApiProperty({
         type: [PostMedia],
@@ -113,11 +118,19 @@ export class Post extends BaseSchema {
 const PostSchema = SchemaFactory.createForClass(Post);
 PostSchema.methods["toDto"] = toDto;
 
+PostSchema.virtual("author_profile", {
+    ref: Profile.name,
+    localField: "author",
+    foreignField: "user",
+    justOne: true,
+});
+
 const PostSchemaModule = MongooseModule.forFeatureAsync([
     {
         name: Post.name,
         useFactory: () => {
             const schema = PostSchema;
+
             return schema;
         },
     },

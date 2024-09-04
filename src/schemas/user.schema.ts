@@ -13,6 +13,7 @@ import { getInvalidMessage, getRequiredMessage, getUniqueMessage } from "@/share
 import { toDto } from "@/shared/utils/toDto";
 
 import { BaseSchema } from "./base.schema";
+import { ProfileDocument } from "./profile.schema";
 import { Role } from "./role.schema";
 
 export type UserDocument = HydratedDocument<User>;
@@ -34,6 +35,9 @@ export class UserStatus {
 @Schema({
     timestamps: true,
     versionKey: false,
+    toJSON: {
+        virtuals: true,
+    },
 })
 export class User extends BaseSchema {
     @ApiProperty({
@@ -86,6 +90,8 @@ export class User extends BaseSchema {
     })
     password: string;
 
+    profile: ProfileDocument;
+
     @Prop([
         {
             type: mongoose.Schema.Types.ObjectId,
@@ -133,6 +139,12 @@ export class User extends BaseSchema {
 
 const UserSchema = SchemaFactory.createForClass(User);
 UserSchema.methods["toDto"] = toDto;
+UserSchema.virtual("profile", {
+    ref: "Profile",
+    localField: "_id",
+    foreignField: "user",
+    justOne: true,
+});
 
 type UserProps = keyof User;
 

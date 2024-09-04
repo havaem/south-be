@@ -5,7 +5,7 @@ import { isAxiosError } from "axios";
 
 import { ELocale } from "@/constants";
 import { ERole } from "@/constants/role";
-import { ProfileDocument } from "@/schemas/profile.schema";
+import { ProfileDocument, ProfilePopulate } from "@/schemas/profile.schema";
 import { UserDocument } from "@/schemas/user.schema";
 import { ConfigService } from "@/shared/services/config.service";
 import { DatabaseSession } from "@/shared/services/db.service";
@@ -166,6 +166,6 @@ export class AuthService {
     }
 
     async getProfile(_id: string) {
-        return await this.userService._findById(_id);
+        return (await this.userService._findById(_id)).populate("profile", ProfilePopulate().select);
     }
 }

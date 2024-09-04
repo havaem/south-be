@@ -15,7 +15,7 @@ export class ProfileService extends DatabaseService<ProfileDocument> {
         super(profileModel, PROFILE_MESSAGES);
     }
 
-    async getProfile(userId: string): Promise<ProfileDto> {
+    async getByUserId(userId: string): Promise<ProfileDto> {
         const profile = await this._findOne({ user: userId });
         return profile.toDto(ProfileDto);
     }

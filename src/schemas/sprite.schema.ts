@@ -6,21 +6,13 @@ import mongoose, { HydratedDocument } from "mongoose";
 
 import { getInvalidMessage, getRequiredMessage } from "@/shared/utils";
 import { toDto } from "@/shared/utils/toDto";
+import { Vector2 } from "@/utils";
 
 import { AnimationDocument } from "./animation.schema";
 import { BaseSchema } from "./base.schema";
 import { Resource, ResourceDocument } from "./resource.schema";
 
 export type SpriteDocument = HydratedDocument<Sprite>;
-class Vector2 {
-    @IsNumber()
-    @Prop({ required: true })
-    x: number;
-
-    @IsNumber()
-    @Prop({ required: true })
-    y: number;
-}
 
 @Schema({
     timestamps: true,

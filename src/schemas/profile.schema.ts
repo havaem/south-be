@@ -131,10 +131,30 @@ export class Profile extends BaseSchema {
         default: process.env.DEFAULT_AVATAR ?? "https://github.com/havaem.png",
     })
     avatar: string;
+
+    @ApiProperty({
+        example: "https://github.com/havaem.png",
+        required: false,
+    })
+    @IsUrl()
+    @Prop({
+        type: String,
+        default: process.env.DEFAULT_COVER ?? "https://github.com/havaem.png",
+    })
+    cover: string;
 }
 
 const ProfileSchema = SchemaFactory.createForClass(Profile);
 ProfileSchema.methods["toDto"] = toDto;
+
+type Props = keyof Profile;
+
+export const ProfilePopulate = (data?: Props[]) => {
+    const defaultOptions: Props[] = ["_id", "name", "avatar", "user"];
+    return {
+        select: data ? defaultOptions.concat(data).join(" ") : defaultOptions.join(" "),
+    };
+};
 
 const ProfileSchemaModule = MongooseModule.forFeatureAsync([
     {

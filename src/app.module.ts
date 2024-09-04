@@ -25,6 +25,7 @@ import { ConfigService } from "./shared/services/config.service";
 import { SpriteModule } from './modules/sprite/sprite.module';
 import { ResourceModule } from './modules/resource/resource.module';
 import { AnimationModule } from './modules/animation/animation.module';
+import { GameObjectModule } from './modules/game-object/game-object.module';
 
 @Module({
     imports: [
@@ -56,6 +57,7 @@ import { AnimationModule } from './modules/animation/animation.module';
         SpriteModule,
         ResourceModule,
         AnimationModule,
+        GameObjectModule,
     ],
     controllers: [],
     providers: [

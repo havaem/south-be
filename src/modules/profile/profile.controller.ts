@@ -20,7 +20,7 @@ export class ProfileController {
         responseType: ProfileDto,
     })
     async getProfile(@User() user: IUserRequest): Promise<ProfileDto> {
-        const response = await this.profileService.getProfile(user._id);
+        const response = await this.profileService.getByUserId(user._id);
         return response;
     }
 
@@ -31,7 +31,7 @@ export class ProfileController {
         responseType: ProfileDto,
     })
     async findOne(@Param("id", MongoId) id: string): Promise<ProfileDto> {
-        const response = await this.profileService._findOne({ id });
-        return response.toDto(ProfileDto);
+        const response = await this.profileService.getByUserId(id);
+        return response;
     }
 }
