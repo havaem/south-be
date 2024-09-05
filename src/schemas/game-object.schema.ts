@@ -2,7 +2,7 @@ import { MongooseModule, Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsEnum, ValidateNested } from "class-validator";
-import { HydratedDocument } from "mongoose";
+import mongoose, { HydratedDocument } from "mongoose";
 
 import { getInvalidMessage, getRequiredMessage } from "@/shared/utils";
 import { toDto } from "@/shared/utils/toDto";
@@ -65,6 +65,17 @@ export class GameObject extends BaseSchema {
         default: INDEX.NORMAL,
     })
     index: INDEX;
+
+    @ApiProperty({
+        type: Object,
+        description: "Data of the object",
+        example: { health: 100, damage: 10 },
+    })
+    @Prop({
+        type: mongoose.Schema.Types.Mixed,
+        default: {},
+    })
+    data: any;
 }
 
 const GameObjectSchema = SchemaFactory.createForClass(GameObject);

@@ -9,5 +9,6 @@ import { GameObjectService } from "./game-object.service";
     imports: [GameObjectSchemaModule],
     controllers: [GameObjectController],
     providers: [GameObjectService],
+    exports: [GameObjectService],
 })
 export class GameObjectModule {}

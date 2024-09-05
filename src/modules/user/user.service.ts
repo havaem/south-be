@@ -10,4 +10,8 @@ export class UserService extends DatabaseService<UserDocument> {
     constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {
         super(userModel, {});
     }
+
+    async findGameObjectByUser(userId: string) {
+        // return this.gameObjectService._find({ userId });
+    }
 }

@@ -72,15 +72,21 @@ export const Api = ({
             break;
     }
     //TODO: Handle when path is a array of strings
-    if (typeof path === "string" && path.split(":").length > 1)
-        decorators.push(
-            ApiParam({
-                name: path.split(":")[1],
-                type: "string",
-                description: "MongoDB ObjectId",
-            }),
-        );
+    if (typeof path === "string" && path.includes(":")) {
+        const pathSplit = path.split("/");
 
+        pathSplit.forEach((split) => {
+            if (split.includes(":")) {
+                decorators.push(
+                    ApiParam({
+                        name: split.split(":")[1],
+                        type: "string",
+                        description: "MongoDB ObjectId",
+                    }),
+                );
+            }
+        });
+    }
     if (permissions) {
         decorators.push(CheckPermissions(...permissions.map((permission) => PERMISSIONS[permission])));
         decorators.push(ApiForbiddenResponse({ description: "Forbidden" }));
