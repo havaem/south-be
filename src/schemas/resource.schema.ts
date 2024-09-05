@@ -11,6 +11,9 @@ import { BaseSchema } from "./base.schema";
 export type ResourceDocument = HydratedDocument<Resource>;
 
 export enum EResourceType {
+    MAP_LOWER = "MAP_LOWER",
+    MAP_UPPER = "MAP_UPPER",
+
     CHARACTER_BODY = "CHARACTER_BODY",
     CHARACTER_EYES = "CHARACTER_EYES",
     CHARACTER_OUTFIT = "CHARACTER_OUTFIT",

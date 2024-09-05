@@ -10,7 +10,7 @@ import { Vector2 } from "@/utils";
 
 import { BaseSchema } from "./base.schema";
 
-export type GameDocument = HydratedDocument<GameObject>;
+export type GameObjectDocument = HydratedDocument<GameObject>;
 
 export enum OBJECT_TYPE {
     NORMAL = "NORMAL",
@@ -33,6 +33,7 @@ export class GameObject extends BaseSchema {
     })
     @ApiProperty({
         type: String,
+        example: OBJECT_TYPE.NORMAL,
         required: true,
         description: "Type of the object",
     })
@@ -56,7 +57,8 @@ export class GameObject extends BaseSchema {
     })
     @ApiProperty({
         type: Number,
-        description: "Type of the object",
+        description: "Index of the object",
+        example: INDEX.NORMAL,
     })
     @Prop({
         enum: INDEX,
@@ -65,17 +67,17 @@ export class GameObject extends BaseSchema {
     index: INDEX;
 }
 
-const GameSchema = SchemaFactory.createForClass(GameObject);
-GameSchema.methods["toDto"] = toDto;
+const GameObjectSchema = SchemaFactory.createForClass(GameObject);
+GameObjectSchema.methods["toDto"] = toDto;
 
-const GameSchemaModule = MongooseModule.forFeatureAsync([
+const GameObjectSchemaModule = MongooseModule.forFeatureAsync([
     {
         name: GameObject.name,
         useFactory: () => {
-            const schema = GameSchema;
+            const schema = GameObjectSchema;
             return schema;
         },
     },
 ]);
 
-export { GameSchema, GameSchemaModule };
+export { GameObjectSchema, GameObjectSchemaModule };

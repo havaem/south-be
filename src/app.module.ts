@@ -26,6 +26,7 @@ import { SpriteModule } from './modules/sprite/sprite.module';
 import { ResourceModule } from './modules/resource/resource.module';
 import { AnimationModule } from './modules/animation/animation.module';
 import { GameObjectModule } from './modules/game-object/game-object.module';
+import { MapModule } from './modules/map/map.module';
 
 @Module({
     imports: [
@@ -58,6 +59,7 @@ import { GameObjectModule } from './modules/game-object/game-object.module';
         ResourceModule,
         AnimationModule,
         GameObjectModule,
+        MapModule,
     ],
     controllers: [],
     providers: [

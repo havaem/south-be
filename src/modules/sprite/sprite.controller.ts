@@ -1,8 +1,10 @@
-import { Controller } from "@nestjs/common";
+import { Body, Controller, Param } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 
-import { Api } from "@/decorators";
+import { Api, MongoId } from "@/decorators";
 
+import { SPRITE_MESSAGES } from "./animation.message";
+import { UpdateSpriteDto } from "./dto/update-sprite.dto";
 import { SpriteService } from "./sprite.service";
 
 @ApiTags("sprite")
@@ -32,5 +34,42 @@ export class SpriteController {
         //     },
         // );
         // return all;
+    }
+
+    @Api({
+        publicRoute: true,
+        responseMessage: SPRITE_MESSAGES.FIND_ALL,
+    })
+    findAll() {
+        return this.spriteService.find();
+    }
+
+    @Api({
+        path: ":id",
+        publicRoute: true,
+        responseMessage: SPRITE_MESSAGES.FIND,
+    })
+    findOne(@Param("id", MongoId) id: string) {
+        return this.spriteService._findById(id);
+    }
+
+    @Api({
+        path: ":id",
+        publicRoute: true,
+        responseMessage: SPRITE_MESSAGES.FIND,
+        method: "PATCH",
+    })
+    update(@Param("id", MongoId) id: string, @Body() body: UpdateSpriteDto) {
+        return this.spriteService._updateById(id, body);
+    }
+
+    @Api({
+        path: ":id",
+        publicRoute: true,
+        responseMessage: SPRITE_MESSAGES.DELETE,
+        method: "DELETE",
+    })
+    remove(@Param("id", MongoId) id: string) {
+        return this.spriteService.remove(id);
     }
 }

@@ -1,26 +1,15 @@
-import { Injectable } from '@nestjs/common';
-import { CreateGameObjectDto } from './dto/create-game-object.dto';
-import { UpdateGameObjectDto } from './dto/update-game-object.dto';
+import { Injectable } from "@nestjs/common";
+import { InjectModel } from "@nestjs/mongoose";
+import { Model } from "mongoose";
+
+import { GameObjectDocument } from "@/schemas/game-object.schema";
+import { DatabaseService } from "@/shared/services/document.service";
+
+import { GAME_OBJECT_MESSAGES } from "./game-object.message";
 
 @Injectable()
-export class GameObjectService {
-  create(createGameObjectDto: CreateGameObjectDto) {
-    return 'This action adds a new gameObject';
-  }
-
-  findAll() {
-    return `This action returns all gameObject`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} gameObject`;
-  }
-
-  update(id: number, updateGameObjectDto: UpdateGameObjectDto) {
-    return `This action updates a #${id} gameObject`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} gameObject`;
-  }
+export class GameObjectService extends DatabaseService<GameObjectDocument> {
+    constructor(@InjectModel("GameObject") private readonly GameObjectDocument: Model<GameObjectDocument>) {
+        super(GameObjectDocument, GAME_OBJECT_MESSAGES);
+    }
 }
