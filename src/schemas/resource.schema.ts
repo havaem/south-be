@@ -44,6 +44,15 @@ export class Resource extends BaseSchema {
 const ResourceSchema = SchemaFactory.createForClass(Resource);
 ResourceSchema.methods["toDto"] = toDto;
 
+type ResourceProps = keyof Resource;
+
+export const ResourcePopulate = (data?: ResourceProps[]) => {
+    const defaultOptions: ResourceProps[] = ["_id", "type", "src"];
+    return {
+        select: data ? defaultOptions.concat(data).join(" ") : defaultOptions.join(" "),
+    };
+};
+
 const ResourceSchemaModule = MongooseModule.forFeatureAsync([
     {
         name: Resource.name,

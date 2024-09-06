@@ -1,7 +1,7 @@
 import { MongooseModule, Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsEnum, ValidateNested } from "class-validator";
+import { IsEnum, IsObject, IsOptional, IsString, ValidateNested } from "class-validator";
 import mongoose, { HydratedDocument } from "mongoose";
 
 import { getInvalidMessage, getRequiredMessage } from "@/shared/utils";
@@ -28,6 +28,18 @@ export enum INDEX {
     versionKey: false,
 })
 export class GameObject extends BaseSchema {
+    @IsString()
+    @ApiProperty({
+        type: String,
+        example: "Object",
+        required: true,
+        description: "Name of the object",
+    })
+    @Prop({
+        default: "",
+    })
+    name: string;
+
     @IsEnum(OBJECT_TYPE, {
         message: getInvalidMessage("Type"),
     })
@@ -66,6 +78,8 @@ export class GameObject extends BaseSchema {
     })
     index: INDEX;
 
+    @IsObject()
+    @IsOptional()
     @ApiProperty({
         type: Object,
         description: "Data of the object",
@@ -80,6 +94,15 @@ export class GameObject extends BaseSchema {
 
 const GameObjectSchema = SchemaFactory.createForClass(GameObject);
 GameObjectSchema.methods["toDto"] = toDto;
+
+type GameObjectProps = keyof GameObject;
+
+export const GameObjectPopulate = (data?: GameObjectProps[]) => {
+    const defaultOptions: GameObjectProps[] = ["_id", "name", "type", "position", "index", "data"];
+    return {
+        select: data ? defaultOptions.concat(data).join(" ") : defaultOptions.join(" "),
+    };
+};
 
 const GameObjectSchemaModule = MongooseModule.forFeatureAsync([
     {

@@ -8,9 +8,9 @@ import { getInvalidMessage, getRequiredMessage } from "@/shared/utils";
 import { toDto } from "@/shared/utils/toDto";
 import { Vector2 } from "@/utils";
 
-import { AnimationDocument } from "./animation.schema";
+import { AnimationDocument, AnimationPopulate } from "./animation.schema";
 import { BaseSchema } from "./base.schema";
-import { Resource, ResourceDocument } from "./resource.schema";
+import { Resource, ResourceDocument, ResourcePopulate } from "./resource.schema";
 
 export type SpriteDocument = HydratedDocument<Sprite>;
 
@@ -30,6 +30,8 @@ export class Sprite extends BaseSchema {
     @Prop({
         type: mongoose.Schema.Types.ObjectId,
         required: [true, getRequiredMessage("Resource")],
+        ref: "Resource",
+        autopopulate: ResourcePopulate(),
     })
     resource: ResourceDocument;
 
@@ -114,6 +116,7 @@ export class Sprite extends BaseSchema {
         type: Array<mongoose.Schema.Types.ObjectId>,
         ref: "Animation",
         default: [],
+        autopopulate: AnimationPopulate(),
     })
     animations: AnimationDocument[];
 }

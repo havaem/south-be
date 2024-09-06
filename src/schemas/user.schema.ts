@@ -13,7 +13,6 @@ import { getInvalidMessage, getRequiredMessage, getUniqueMessage } from "@/share
 import { toDto } from "@/shared/utils/toDto";
 
 import { BaseSchema } from "./base.schema";
-import { GameObjectDocument } from "./game-object.schema";
 import { ProfileDocument } from "./profile.schema";
 import { Role } from "./role.schema";
 
@@ -134,20 +133,6 @@ export class User extends BaseSchema {
         default: ELocale.VI,
     })
     locale: ELocale;
-
-    @ApiProperty({
-        type: String,
-        default: null,
-        description: "GameObject Id",
-    })
-    @Prop({
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "GameObject",
-        default: null,
-        autopopulate: true,
-    })
-    hero: GameObjectDocument;
-
     comparePassword: (password: string) => Promise<boolean>;
 }
 

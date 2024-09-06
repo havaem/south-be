@@ -60,6 +60,15 @@ export class Animation extends BaseSchema {
 const AnimationSchema = SchemaFactory.createForClass(Animation);
 AnimationSchema.methods["toDto"] = toDto;
 
+type AnimationProps = keyof Animation;
+
+export const AnimationPopulate = (data?: AnimationProps[]) => {
+    const defaultOptions: AnimationProps[] = ["_id", "duration", "name", "frames"];
+    return {
+        select: data ? defaultOptions.concat(data).join(" ") : defaultOptions.join(" "),
+    };
+};
+
 const AnimationSchemaModule = MongooseModule.forFeatureAsync([
     {
         name: Animation.name,

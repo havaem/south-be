@@ -27,6 +27,7 @@ import { ResourceModule } from './modules/resource/resource.module';
 import { AnimationModule } from './modules/animation/animation.module';
 import { GameObjectModule } from './modules/game-object/game-object.module';
 import { MapModule } from './modules/map/map.module';
+import { GameProfileModule } from './modules/game-profile/game-profile.module';
 
 @Module({
     imports: [
@@ -60,6 +61,7 @@ import { MapModule } from './modules/map/map.module';
         AnimationModule,
         GameObjectModule,
         MapModule,
+        GameProfileModule,
     ],
     controllers: [],
     providers: [
