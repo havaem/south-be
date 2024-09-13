@@ -2,7 +2,7 @@ import { MongooseModule, Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsMongoId, IsNumber, IsString, ValidateNested } from "class-validator";
-import mongoose, { HydratedDocument } from "mongoose";
+import mongoose, { HydratedDocument, ObjectId } from "mongoose";
 
 import { getInvalidMessage, getRequiredMessage } from "@/shared/utils";
 import { toDto } from "@/shared/utils/toDto";
@@ -33,7 +33,7 @@ export class Sprite extends BaseSchema {
         ref: "Resource",
         autopopulate: ResourcePopulate(),
     })
-    resource: ResourceDocument;
+    resource: ResourceDocument | string;
 
     @ApiProperty({
         example: "Head Blue",
@@ -118,7 +118,7 @@ export class Sprite extends BaseSchema {
         default: [],
         autopopulate: AnimationPopulate(),
     })
-    animations: AnimationDocument[];
+    animations: AnimationDocument[] | ObjectId[] | string[];
 }
 
 const SpriteSchema = SchemaFactory.createForClass(Sprite);

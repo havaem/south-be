@@ -10,4 +10,15 @@ export class SpriteService extends DatabaseService<SpriteDocument> {
     constructor(@InjectModel(Sprite.name) private spriteModel: Model<SpriteDocument>) {
         super(spriteModel, {});
     }
+
+    async getResourceCharacterBuilder() {
+        // const sprites = await this.spriteModel.find({
+        //     name: {
+        //         // if name contains Hairstyle or Eye or Body
+        //         $regex: /Hairstyle|Eye|Body/,
+        //     },
+        // });
+        // console.log("sprites: ", sprites);
+        return [];
+    }
 }

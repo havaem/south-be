@@ -30,6 +30,7 @@ export class GameProfileController {
 
             return newDoc;
         }
+        console.log(current);
         return current;
     }
 

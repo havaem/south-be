@@ -14,4 +14,8 @@ export class ResourceService extends DatabaseService<ResourceDocument> {
     findAll() {
         return this.resourceModel.find();
     }
+
+    findBy(type: string) {
+        return this.resourceModel.find({ type });
+    }
 }

@@ -9,5 +9,6 @@ import { ResourceService } from "./resource.service";
     imports: [ResourceSchemaModule],
     controllers: [ResourceController],
     providers: [ResourceService],
+    exports: [ResourceService],
 })
 export class ResourceModule {}
