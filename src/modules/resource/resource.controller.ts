@@ -17,10 +17,10 @@ export class ResourceController {
         method: "POST",
     })
     create(@Body() createResourceDto: CreateResourceDto) {
-        // const data: CreateResourceDto[] = [];
+        const data: CreateResourceDto[] = [];
 
-        // return this.resourceService.createMany(data);
-        return this.resourceService.create(createResourceDto);
+        return this.resourceService.createMany(data);
+        // return this.resourceService.create(createResourceDto);
     }
 
     @ApiQuery({

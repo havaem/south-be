@@ -1,11 +1,10 @@
-import { Body, Controller, Param } from "@nestjs/common";
+import { Controller, Param } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { ObjectId } from "mongodb";
 
 import { Api, MongoId } from "@/decorators";
 
 import { ResourceService } from "../resource/resource.service";
-import { UpdateSpriteDto } from "./dto/update-sprite.dto";
 import { SPRITE_MESSAGES } from "./sprite.message";
 import { SpriteService } from "./sprite.service";
 
@@ -29,7 +28,7 @@ export class SpriteController {
             return name;
         };
 
-        const resources = (await this.resourceService.findBy("CHARACTER_HAIR")).sort((a, b) => {
+        const resources = (await this.resourceService.findBy("CHARACTER_OUTFIT")).sort((a, b) => {
             return a.src.localeCompare(b.src);
         });
 
@@ -80,14 +79,14 @@ export class SpriteController {
         return this.spriteService.find();
     }
 
-    @Api({
-        path: ":id",
-        publicRoute: true,
-        responseMessage: SPRITE_MESSAGES.FIND,
-    })
-    findOne(@Param("id", MongoId) id: string) {
-        return this.spriteService._findById(id);
-    }
+    // @Api({
+    //     path: ":id",
+    //     publicRoute: true,
+    //     responseMessage: SPRITE_MESSAGES.FIND,
+    // })
+    // findOne(@Param("id", MongoId) id: string) {
+    //     return this.spriteService._findById(id);
+    // }
 
     @Api({
         path: "character-builder",
@@ -95,19 +94,19 @@ export class SpriteController {
         publicRoute: true,
     })
     getResourceCharacterBuilder() {
-        return [];
-        // return this.spriteService.getResourceCharacterBuilder();
+        // return [];
+        return this.spriteService.getResourceCharacterBuilder();
     }
 
-    @Api({
-        path: ":id",
-        publicRoute: true,
-        responseMessage: SPRITE_MESSAGES.FIND,
-        method: "PATCH",
-    })
-    update(@Param("id", MongoId) id: string, @Body() body: UpdateSpriteDto) {
-        return this.spriteService._updateById(id, body);
-    }
+    // @Api({
+    //     path: ":id",
+    //     publicRoute: true,
+    //     responseMessage: SPRITE_MESSAGES.FIND,
+    //     method: "PATCH",
+    // })
+    // update(@Param("id", MongoId) id: string, @Body() body: UpdateSpriteDto) {
+    //     return this.spriteService._updateById(id, body);
+    // }
 
     @Api({
         path: ":id",

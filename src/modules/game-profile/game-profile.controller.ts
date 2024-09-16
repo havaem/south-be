@@ -19,19 +19,22 @@ export class GameProfileController {
         responseMessage: GAME_OBJECT_MESSAGES.GET_CURRENT_USER_GAME_PROFILE,
     })
     async getCurrentUserGameProfile(@User() user: IUserRequest) {
-        const current = await this.gameProfileService.findOne({
-            user: user._id,
-        });
-        if (!current) {
-            const newDoc = await this.gameProfileService.create({
-                user: user._id,
-                hero: "66da6e8ded32beba88b44ade",
-            });
+        const response = await this.gameProfileService.getCurrentUserGameProfile(user._id);
+        return response;
+    }
 
-            return newDoc;
-        }
-        console.log(current);
-        return current;
+    @Api({
+        path: "current",
+        method: "PATCH",
+        responseMessage: GAME_OBJECT_MESSAGES.UPDATE_CURRENT_USER_GAME_PROFILE,
+    })
+    async updateCurrentUserGameProfile(@User() user: IUserRequest, @Body() body: UpdateGameObjectDto) {
+        return this.gameProfileService.updateOne(
+            {
+                user: user._id,
+            },
+            body,
+        );
     }
 
     @Api({
