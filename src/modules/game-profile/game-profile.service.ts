@@ -2,8 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 
+import { GameProfileDocument } from "@/schemas";
 import { INDEX, OBJECT_TYPE } from "@/schemas/game-object.schema";
-import { GameProfileDocument } from "@/schemas/game-profile";
 import { DatabaseService } from "@/shared/services/document.service";
 
 import { GameObjectService } from "../game-object/game-object.service";

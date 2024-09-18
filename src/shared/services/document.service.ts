@@ -103,8 +103,25 @@ export class DatabaseService<T extends Document> {
         return result;
     }
 
+    async findOneAndUpdate(filter: FilterQuery<T>, update: UpdateQuery<T>, options?: QueryOptions<T>) {
+        return this.model.findOneAndUpdate(filter, update, options);
+    }
+
+    async _findOneAndUpdate(filter: FilterQuery<T>, update: UpdateQuery<T>, options?: QueryOptions<T>) {
+        const result = await this.model.findOneAndUpdate(filter, update, options);
+        if (!result) throw new NotFoundException(this.messages["NOT_FOUND"] ?? this.name() + "NOT_FOUND");
+        return result;
+    }
+
     updateOne(filter?: FilterQuery<T>, update?: UpdateQuery<T>, options?: MongoDBQueryOptions<T>) {
         return this.model.updateOne(filter, update, options);
+    }
+
+    async _updateOne(filter?: FilterQuery<T>, update?: UpdateQuery<T>, options?: MongoDBQueryOptions<T>) {
+        const result = await this.model.updateOne(filter, update, options);
+        if (result.modifiedCount === 0)
+            throw new NotFoundException(this.messages["NOT_FOUND"] ?? this.name() + "NOT_FOUND");
+        return result;
     }
 
     updateMany(filter?: FilterQuery<T>, update?: UpdateQuery<T>, options?: MongoDBQueryOptions<T>) {

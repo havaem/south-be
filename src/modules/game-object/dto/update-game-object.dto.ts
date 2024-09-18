@@ -1,5 +1,5 @@
-import { PartialType } from "@nestjs/swagger";
+import { PickType } from "@nestjs/swagger";
 
 import { CreateGameObjectDto } from "./create-game-object.dto";
 
-export class UpdateGameObjectDto extends PartialType(CreateGameObjectDto) {}
+export class UpdateGameObjectDto extends PickType(CreateGameObjectDto, ["data"]) {}

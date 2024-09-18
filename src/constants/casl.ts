@@ -4,4 +4,6 @@ export enum ESubject {
     POST = "Post",
     COMMENT = "Comment",
     LIKE = "Like",
+    GAME_OBJECT = "GameObject",
+    GAME_PROFILE = "GameProfile",
 }

@@ -1,9 +1,10 @@
 import { createMongoAbility, ForcedSubject, MongoAbility, RawRuleOf } from "@casl/ability";
 import { Injectable } from "@nestjs/common";
 
+import { ESubject } from "@/constants";
 import { EAction } from "@/constants/action";
 
-export const subjects = ["Role", "User", "Post", "Comment", "Like", "all"] as const;
+export const subjects = [...Object.values(ESubject), "all"] as const;
 export type Subjects = (typeof subjects)[number] | ForcedSubject<Exclude<(typeof subjects)[number], "all">>;
 
 export type AppAbility = MongoAbility<[EAction, Subjects]>;

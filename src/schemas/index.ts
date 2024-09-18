@@ -1,5 +1,7 @@
 export * from "./animation.schema";
 export * from "./base.schema";
+export * from "./game-object.schema";
+export * from "./game-profile.schema";
 export * from "./like.schema";
 export * from "./perrmission.schema";
 export * from "./post.schema";

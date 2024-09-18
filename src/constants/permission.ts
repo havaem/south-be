@@ -10,4 +10,7 @@ export const PERMISSIONS = {
     ROLE_CREATE: (ability: AppAbility) => ability.can(EAction.CREATE, ESubject.ROLE),
 
     POST_CREATE: (ability: AppAbility) => ability.can(EAction.CREATE, ESubject.POST),
+
+    GAME_OBJECT_GET_BY_ID: (ability: AppAbility) => ability.can(EAction.READ, ESubject.GAME_OBJECT),
+    GAME_OBJECT_UPDATE_BY_ID: (ability: AppAbility) => ability.can(EAction.UPDATE, ESubject.GAME_OBJECT),
 };

@@ -1,7 +1,9 @@
 import { Body, Controller, Param } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 
-import { Api, MongoId } from "@/decorators";
+import { Api, MongoId, User } from "@/decorators";
+import { GameObject } from "@/schemas";
+import { IUserRequest } from "@/shared/types";
 
 import { CreateGameObjectDto } from "./dto/create-game-object.dto";
 import { UpdateGameObjectDto } from "./dto/update-game-object.dto";
@@ -24,8 +26,18 @@ export class GameObjectController {
         publicRoute: true,
         responseMessage: GAME_OBJECT_MESSAGES.FIND_ALL,
     })
-    findAll() {
-        return this.gameObjectService.find();
+    async findAll() {
+        const response = await this.gameObjectService.find();
+        return response.map((item) => item.toDto(GameObject));
+    }
+
+    @Api({
+        path: "current",
+        responseMessage: GAME_OBJECT_MESSAGES.UPDATE,
+        method: "PATCH",
+    })
+    updateCurrent(@User() user: IUserRequest, @Body() body: UpdateGameObjectDto) {
+        return this.gameObjectService.updateCurrent(user._id, body);
     }
 
     @Api({
@@ -33,14 +45,14 @@ export class GameObjectController {
         publicRoute: true,
         responseMessage: GAME_OBJECT_MESSAGES.FIND,
     })
-    findOne(@Param("id", MongoId) id: string) {
-        return this.gameObjectService._findById(id);
+    async findOne(@Param("id", MongoId) id: string) {
+        const response = await this.gameObjectService._findById(id);
+        return response.toDto(GameObject);
     }
 
     @Api({
         path: ":id",
-        publicRoute: true,
-        responseMessage: GAME_OBJECT_MESSAGES.FIND,
+        responseMessage: GAME_OBJECT_MESSAGES.UPDATE,
         method: "PATCH",
     })
     update(@Param("id", MongoId) id: string, @Body() body: UpdateGameObjectDto) {

@@ -101,6 +101,7 @@ export const GameObjectPopulate = (data?: GameObjectProps[]) => {
     const defaultOptions: GameObjectProps[] = ["_id", "name", "type", "position", "index", "data"];
     return {
         select: data ? defaultOptions.concat(data).join(" ") : defaultOptions.join(" "),
+        maxDepth: 2,
     };
 };
 

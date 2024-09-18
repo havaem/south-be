@@ -23,19 +23,15 @@ export class GameProfileController {
         return response;
     }
 
-    @Api({
-        path: "current",
-        method: "PATCH",
-        responseMessage: GAME_OBJECT_MESSAGES.UPDATE_CURRENT_USER_GAME_PROFILE,
-    })
-    async updateCurrentUserGameProfile(@User() user: IUserRequest, @Body() body: UpdateGameObjectDto) {
-        return this.gameProfileService.updateOne(
-            {
-                user: user._id,
-            },
-            body,
-        );
-    }
+    // @Api({
+    //     path: "current",
+    //     method: "PATCH",
+    //     responseMessage: GAME_OBJECT_MESSAGES.UPDATE_CURRENT_USER_GAME_PROFILE,
+    // })
+    // async updateCurrentUserGameProfile(@User() user: IUserRequest, @Body() body: UpdateGameObjectDto) {
+    //     const response = await this.gameProfileService.updateCurrentUserGameProfile(user._id, body);
+    //     return response.toDto(GameProfile);
+    // }
 
     @Api({
         publicRoute: true,
