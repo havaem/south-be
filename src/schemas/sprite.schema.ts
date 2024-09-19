@@ -124,6 +124,26 @@ export class Sprite extends BaseSchema {
 const SpriteSchema = SchemaFactory.createForClass(Sprite);
 SpriteSchema.methods["toDto"] = toDto;
 
+type SpriteProps = keyof Sprite;
+
+export const SpritePopulate = (data?: SpriteProps[]) => {
+    const defaultOptions: SpriteProps[] = [
+        "_id",
+        "name",
+        "position",
+        "offset",
+        "frameSize",
+        "verticalFrame",
+        "horizontalFrame",
+        "defaultFrame",
+        "scale",
+        "animations",
+    ];
+    return {
+        select: data ? defaultOptions.concat(data).join(" ") : defaultOptions.join(" "),
+    };
+};
+
 const SpriteSchemaModule = MongooseModule.forFeatureAsync([
     {
         name: Sprite.name,

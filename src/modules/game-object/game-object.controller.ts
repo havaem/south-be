@@ -45,8 +45,8 @@ export class GameObjectController {
         publicRoute: true,
         responseMessage: GAME_OBJECT_MESSAGES.FIND,
     })
-    async findOne(@Param("id", MongoId) id: string) {
-        const response = await this.gameObjectService._findById(id);
+    async findById(@Param("id", MongoId) id: string) {
+        const response = await this.gameObjectService.findByIdAndPopulate(id);
         return response.toDto(GameObject);
     }
 

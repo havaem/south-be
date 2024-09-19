@@ -6,7 +6,7 @@ import mongoose, { HydratedDocument } from "mongoose";
 import { toDto } from "@/shared/utils/toDto";
 
 import { BaseSchema } from "./base.schema";
-import { GameObjectDocument, GameObjectPopulate } from "./game-object.schema";
+import { GameObjectDocument } from "./game-object.schema";
 import { User, UserPopulate } from "./user.schema";
 
 export type GameProfileDocument = HydratedDocument<GameProfile>;
@@ -39,7 +39,6 @@ export class GameProfile extends BaseSchema {
         type: mongoose.Schema.Types.ObjectId,
         ref: "GameObject",
         default: null,
-        autopopulate: GameObjectPopulate(),
     })
     hero: GameObjectDocument | string;
 }

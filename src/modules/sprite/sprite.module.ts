@@ -10,5 +10,6 @@ import { SpriteService } from "./sprite.service";
     imports: [SpriteSchemaModule, ResourceModule],
     controllers: [SpriteController],
     providers: [SpriteService],
+    exports: [SpriteService],
 })
 export class SpriteModule {}
