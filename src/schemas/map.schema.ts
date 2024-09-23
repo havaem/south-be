@@ -1,11 +1,13 @@
 import { MongooseModule, Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsArray, IsMongoId, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsArray, IsMongoId, IsNotEmpty, IsOptional, IsString, ValidateNested } from "class-validator";
 import mongoose, { HydratedDocument } from "mongoose";
 
 import { getInvalidMessage, getRequiredMessage, getUniqueMessage } from "@/shared/utils";
 import { toDto } from "@/shared/utils/toDto";
 
+import { Vector2 } from "@/utils";
+import { Type } from "class-transformer";
 import { BaseSchema } from "./base.schema";
 import { ResourceDocument } from "./resource.schema";
 
@@ -74,6 +76,15 @@ export class Map extends BaseSchema {
         required: true,
     })
     grid: number[][];
+
+    @ApiProperty({
+        example: { x: 0, y: 0 },
+        required: true,
+    })
+    @ValidateNested()
+    @Type(() => Vector2)
+    @Prop({ required: [true, getRequiredMessage("default player position")], default: { x: 0, y: 0 } })
+    defaultPlayerPosition: Vector2;
 }
 
 const MapSchema = SchemaFactory.createForClass(Map);
