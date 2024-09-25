@@ -4,7 +4,7 @@ import { Type } from "class-transformer";
 import { IsEnum, IsObject, IsOptional, IsString, ValidateNested } from "class-validator";
 import mongoose, { HydratedDocument } from "mongoose";
 
-import { getInvalidMessage, getRequiredMessage } from "@/shared/utils";
+import { getInvalidMessage } from "@/shared/utils";
 import { toDto } from "@/shared/utils/toDto";
 import { Vector2 } from "@/utils";
 
@@ -61,7 +61,10 @@ export class GameObject extends BaseSchema {
     })
     @ValidateNested()
     @Type(() => Vector2)
-    @Prop({ required: [true, getRequiredMessage("position")] })
+    @Prop({
+        type: Vector2,
+        default: { x: 0, y: 0 },
+    })
     position: Vector2;
 
     @IsEnum(INDEX, {

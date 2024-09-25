@@ -25,7 +25,7 @@ export class GameProfileService extends DatabaseService<GameProfileDocument> {
         });
         if (!current) {
             const initGameObject = await this.gameObjectService.create({
-                name: "Hero" + userId,
+                name: "Hero-" + userId,
                 type: OBJECT_TYPE.LIVEABLE,
                 index: INDEX.LIVEABLE,
                 data: {
